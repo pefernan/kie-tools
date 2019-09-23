@@ -37,16 +37,24 @@ export class KogitoEditorsExtension {
   }
 
   public registerCustomSaveCommand() {
-    this.context.subscriptions.push(
-      vscode.commands.registerCommand("workbench.action.files.save", async () => {
-        // If a text editor is active, we save it normally.
-        if (vscode.window.activeTextEditor) {
-          await vscode.window.activeTextEditor.document.save();
-        }
-        // If a kogito editor is active, its content is saved manually.
-        this.editorStore.withActive(editor => editor.requestSave());
-      })
-    );
+      vscode.window.showInformationMessage("registerCustomSaveCommand 1");
+      this.context.subscriptions.push(
+          vscode.commands.registerCommand("workbench.action.files.save", async () => {
+
+              vscode.window.showInformationMessage("save 1");
+              // If a text editor is active, we save it normally.
+              if (vscode.window.activeTextEditor) {
+                  vscode.window.showInformationMessage("save text editor");
+                  await vscode.window.activeTextEditor.document.save();
+                  vscode.window.showInformationMessage("save text editor done!");
+              }
+              // If a kogito editor is active, its content is saved manually.
+              vscode.window.showInformationMessage("save editor request save!");
+              this.editorStore.withActive(editor => editor.requestSave());
+              vscode.window.showInformationMessage("save editor request save done!");
+          })
+      );
+      vscode.window.showInformationMessage("registerCustomSaveCommand 2");
   }
 
   public registerCustomSaveAllCommand() {
