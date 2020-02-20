@@ -86,11 +86,11 @@ export class EditorEnvelopeController {
       receive_resourceContentList: (resourcesList: ResourcesList) => {
         this.resourceContentEditorCoordinator.resolvePendingList(resourcesList);
       },
-      receive_editorUndo: () => {
-        this.stateControl.undo();
+      receive_editorUndo: (edits: KogitoEdit[]) => {
+        this.stateControl.undo(edits);
       },
-      receive_editorRedo: () => {
-        this.stateControl.redo();
+      receive_editorRedo: (edits: KogitoEdit[]) => {
+        this.stateControl.redo(edits);
       },
     }));
   }

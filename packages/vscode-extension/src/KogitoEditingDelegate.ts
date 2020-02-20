@@ -16,17 +16,17 @@
 
 import * as vscode from "vscode";
 import { WebviewCustomEditorEditingDelegate } from "vscode";
-import { KogitoEditType } from "./KogitoEditType";
 import { KogitoEditorStore } from "./KogitoEditorStore";
+import { KogitoEdit } from "@kogito-tooling/core-api";
 
-export class KogitoEditingDelegate implements WebviewCustomEditorEditingDelegate<KogitoEditType> {
+export class KogitoEditingDelegate implements WebviewCustomEditorEditingDelegate<KogitoEdit> {
   private readonly _onEdit = new vscode.EventEmitter<{
     readonly resource: vscode.Uri;
-    readonly edit: KogitoEditType;
+    readonly edit: KogitoEdit;
   }>();
 
   private readonly editorStore: KogitoEditorStore;
-  public readonly onEdit: vscode.Event<{ readonly resource: vscode.Uri; readonly edit: KogitoEditType }>;
+  public readonly onEdit: vscode.Event<{ readonly resource: vscode.Uri; readonly edit: KogitoEdit }>;
 
   public constructor(editorStore: KogitoEditorStore) {
     this.editorStore = editorStore;
@@ -42,11 +42,21 @@ export class KogitoEditingDelegate implements WebviewCustomEditorEditingDelegate
     console.info("saveAs");
   }
 
-  public async undoEdits(resource: vscode.Uri, edits: KogitoEditType[]) {
-    console.info("undo");
+  public async undoEdits(resource: vscode.Uri, edits: KogitoEdit[]) {
+    console.debug("KogitoEditingDelegate undo");
+    this.editorStore.withActive(activeEditor => activeEditor.requestUndo(edits))
   }
 
-  public async applyEdits(resource: vscode.Uri, edits: KogitoEditType[]) {
-    console.info("redo");
+  public async applyEdits(resource: vscode.Uri, edits: KogitoEdit[]) {
+    console.debug("KogitoEditingDelegate redo");
+    this.editorStore.withActive(activeEditor => activeEditor.requestRedo(edits))
+  }
+
+  public signalEdit(resource: vscode.Uri, edit: KogitoEdit): void {
+    console.debug("KogitoEditingDelegate signalEdit: " + edit.id);
+    this._onEdit.fire({
+      resource: resource,
+      edit: edit
+    });
   }
 }

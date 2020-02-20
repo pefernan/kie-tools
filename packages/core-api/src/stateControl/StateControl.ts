@@ -15,6 +15,7 @@
  */
 
 import { KogitoCommandRegistry, KogitoCommandRegistryImpl } from "./registry/KogitoCommandRegistry";
+import { KogitoEdit } from "./KogitoEdit";
 
 export class StateControl {
 
@@ -27,13 +28,25 @@ export class StateControl {
     this.registry = registry;
   }
 
-  public undo(): void {
+  public undo(edits?: KogitoEdit[]): void {
+    console.info("UNDO: " + edits);
+    if(edits) {
+      console.info("UNDO: " + edits.length);
+      edits.forEach(edit => console.info("edit: " + edit.id))
+    }
+
     if (this.undoCommand) {
       this.undoCommand();
     }
   }
 
-  public redo(): void {
+  public redo(edits?: KogitoEdit[]): void {
+    console.info("REDO: " + edits);
+    if(edits) {
+      console.info("REDO: " + edits.length);
+      edits.forEach(edit => console.info("edit: " + edit.id))
+    }
+
     if (this.redoCommand) {
       this.redoCommand();
     }

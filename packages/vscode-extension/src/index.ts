@@ -49,8 +49,6 @@ export function startExtension(args: {
   const webviewProvider = new KogitoWebviewProvider(editorFactory, editingDelegate);
 
   args.context.subscriptions.push(webviewProvider.register());
-
-  //TODO: extension.registerStateControl()
 }
 
 export * from "./DefaultVsCodeRouter";

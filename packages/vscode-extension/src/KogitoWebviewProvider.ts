@@ -16,12 +16,12 @@
 
 import * as vscode from "vscode";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { KogitoEditType } from "./KogitoEditType";
 import { KogitoEditingDelegate } from "./KogitoEditingDelegate";
+import { KogitoEdit } from "@kogito-tooling/core-api";
 
 export class KogitoWebviewProvider implements vscode.WebviewCustomEditorProvider {
   private readonly editorFactory: KogitoEditorFactory;
-  public readonly editingDelegate?: vscode.WebviewCustomEditorEditingDelegate<KogitoEditType>;
+  public readonly editingDelegate?: vscode.WebviewCustomEditorEditingDelegate<KogitoEdit>;
 
   public constructor(editorFactory: KogitoEditorFactory, editingDelegate: KogitoEditingDelegate) {
     this.editorFactory = editorFactory;
@@ -29,7 +29,9 @@ export class KogitoWebviewProvider implements vscode.WebviewCustomEditorProvider
   }
 
   public async resolveWebviewEditor(resource: vscode.Uri, webview: vscode.WebviewPanel) {
-    this.editorFactory.configureNew(resource, webview);
+    this.editorFactory.configureNew(resource, webview, (edit: KogitoEdit) => {
+      (this.editingDelegate as KogitoEditingDelegate).signalEdit(resource, edit);
+    });
   }
 
   public register() {

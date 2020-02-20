@@ -23,8 +23,9 @@ import {
   ResourceContent,
   ResourceContentService,
   Router,
-  ResourceContentRequest
+  ResourceContentRequest, KogitoEdit
 } from "@kogito-tooling/core-api";
+import { Uri } from "vscode";
 
 export class KogitoEditor {
   private static readonly DIRTY_INDICATOR = " *";
@@ -38,6 +39,7 @@ export class KogitoEditor {
   private readonly editorStore: KogitoEditorStore;
   private readonly envelopeBusOuterMessageHandler: EnvelopeBusOuterMessageHandler;
   private readonly resourceContentService: ResourceContentService;
+  private readonly signalEdit: (edit: KogitoEdit) => void;
 
   public constructor(
     relativePath: string,
@@ -47,7 +49,8 @@ export class KogitoEditor {
     router: Router,
     webviewLocation: string,
     editorStore: KogitoEditorStore,
-    resourceContentService: ResourceContentService
+    resourceContentService: ResourceContentService,
+    signalEdit: (edit: KogitoEdit) => void
   ) {
     this.relativePath = relativePath;
     this.path = path;
@@ -57,6 +60,7 @@ export class KogitoEditor {
     this.webviewLocation = webviewLocation;
     this.editorStore = editorStore;
     this.resourceContentService = resourceContentService;
+    this.signalEdit = signalEdit;
     this.envelopeBusOuterMessageHandler = new EnvelopeBusOuterMessageHandler(
       {
         postMessage: msg => {
@@ -98,12 +102,15 @@ export class KogitoEditor {
         receive_ready(): void {
           /**/
         },
-        request_editorUndo: () => {
-          this.requestUndo();
+        request_editorUndo: (edits: KogitoEdit[]) => {
+          this.requestUndo(edits);
         },
 
-        request_editorRedo: () => {
-          this.requestRedo();
+        request_editorRedo: (edits: KogitoEdit[]) => {
+          this.requestRedo(edits);
+        },
+        receive_newEdit: (edit: KogitoEdit) => {
+          this.signalEdit(edit);
         }
       })
     );
@@ -123,12 +130,12 @@ export class KogitoEditor {
     this.envelopeBusOuterMessageHandler.request_contentResponse();
   }
 
-  public requestUndo() {
-    this.envelopeBusOuterMessageHandler.request_editor_undo();
+  public requestUndo(edits: KogitoEdit[]) {
+    this.envelopeBusOuterMessageHandler.request_editorUndo(edits);
   }
 
-  public requestRedo() {
-    this.envelopeBusOuterMessageHandler.request_editor_redo();
+  public requestRedo(edits: KogitoEdit[]) {
+    this.envelopeBusOuterMessageHandler.request_editorRedo(edits);
   }
 
   public setupEnvelopeBus() {
