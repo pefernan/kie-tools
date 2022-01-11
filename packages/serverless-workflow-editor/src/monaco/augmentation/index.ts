@@ -17,6 +17,7 @@
 import * as monaco from "monaco-editor";
 import { CancellationToken, editor, languages, Position } from "monaco-editor";
 import { getSuggestions } from "./completion";
+import { showWidget } from "./widgets";
 
 // Setting up the JSON language defaults
 export const SW_SPEC_SCHEMA =
@@ -60,7 +61,6 @@ export interface IMonacoEditor {
 
 class DefaultMonacoEditor implements IMonacoEditor {
   private readonly model: editor.ITextModel;
-  private readonly onContentChange: (content: string) => void;
 
   private editor: editor.IStandaloneCodeEditor;
 
@@ -88,6 +88,8 @@ class DefaultMonacoEditor implements IMonacoEditor {
       scrollBeyondLastLine: false,
       automaticLayout: true,
     });
+
+    this.editor.onMouseDown((event) => showWidget(event, this.editor));
   }
 
   dispose(): void {
