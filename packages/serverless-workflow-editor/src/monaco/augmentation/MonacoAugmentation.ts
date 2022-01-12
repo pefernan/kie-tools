@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
+import { lookupLanguage, MonacoLanguage } from "./language";
 import { DefaultMonacoEditor, MonacoEditorApi } from "./MonacoEditorApi";
-import { lookupLanguage } from "./language";
 import { initCompletion } from "./completion";
-import { MonacoAugmentation } from "./MonacoAugmentation";
 
-export { MonacoEditorApi } from "./MonacoEditorApi";
-export { MonacoAugmentation } from "./MonacoAugmentation";
-
-export function buildEditor(
-  content: string,
-  fileName: string,
-  onContentChange: (content: string) => void
-): MonacoEditorApi {
-  const augmentation: MonacoAugmentation = {
-    language: lookupLanguage(fileName),
-  };
-
-  initCompletion(augmentation);
-
-  return new DefaultMonacoEditor(content, onContentChange, augmentation);
+export class MonacoAugmentation {
+  language: MonacoLanguage;
 }
