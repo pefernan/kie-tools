@@ -19,6 +19,7 @@ import * as jsonService from "vscode-json-languageservice";
 import { CancellationToken, editor, languages, Position } from "monaco-editor";
 import { MonacoCompletionHelper } from "./helpers";
 import { MonacoAugmentation } from "../MonacoAugmentation";
+import { getYAMLSuggestions } from "../language/yaml";
 
 export type CompletionArgs = {
   model: editor.ITextModel;
@@ -80,7 +81,7 @@ export function initCompletion(augmentation: MonacoAugmentation): void {
       token: CancellationToken
     ): languages.ProviderResult<languages.CompletionList> {
       if (augmentation.language.languageId === "yaml") {
-        return null;
+        return getYAMLSuggestions(model, position, context, token);
       }
 
       return getSuggestions({

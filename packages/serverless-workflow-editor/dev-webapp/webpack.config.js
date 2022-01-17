@@ -54,11 +54,15 @@ module.exports = (env) =>
           },
         ],
       }),
+      new webpack.DefinePlugin({
+        "process.env": JSON.stringify(process.env),
+      }),
       new webpack.ProvidePlugin({
         mermaid: "mermaid",
       }),
     ],
     module: {
+      noParse: /vscode-json-languageservice/,
       rules: [
         {
           test: /\.js$/,
