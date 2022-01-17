@@ -20,7 +20,7 @@
     "monaco-editor": "^0.23.0",
     "monaco-yaml": "^3.2.1",
     "vscode-json-languageservice": "^4.1.0",
-    "yaml-language-server": "^0.22.0"
+    "yaml-language-server": "^0.23.0"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
