@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-import { ASTContentParser } from "./parser";
+import { TextDocument } from "vscode-languageserver-types";
+import { ASTDocument } from "./ASTTypes";
 
-export interface MonacoLanguage {
-  languageId: string;
-
-  parser: ASTContentParser;
-
-  getDefaultContent: (content: string) => string;
+export interface ASTContentParser {
+  parseContent(content: TextDocument): ASTDocument;
 }

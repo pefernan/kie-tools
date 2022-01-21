@@ -15,24 +15,35 @@
  */
 
 import * as monaco from "monaco-editor";
+import * as jsonService from "vscode-json-languageservice";
+import { TextDocument } from "vscode-languageserver-types";
 import { MonacoLanguage } from "../MonacoLanguage";
 import { SW_SPEC_SCHEMA_URI } from "../schemas";
+import { ASTDocument } from "../parser";
+
+monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+  validate: true,
+  allowComments: false,
+  schemas: [
+    {
+      uri: SW_SPEC_SCHEMA_URI,
+      fileMatch: ["*"],
+    },
+  ],
+  enableSchemaRequest: true,
+});
+
+const jsonLangService = jsonService.getLanguageService({});
 
 export function lookupJSONLanguage(): MonacoLanguage {
-  monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-    validate: true,
-    allowComments: false,
-    schemas: [
-      {
-        uri: SW_SPEC_SCHEMA_URI,
-        fileMatch: ["*"],
-      },
-    ],
-    enableSchemaRequest: true,
-  });
-
   return {
     languageId: "json",
+
+    parser: {
+      parseContent(content: TextDocument): ASTDocument {
+        return jsonLangService.parseJSONDocument(content) as ASTDocument;
+      },
+    },
 
     getDefaultContent: (content) => {
       if (!content || content.trim() === "") {

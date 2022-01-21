@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import { ASTNode, PropertyASTNode } from "vscode-json-languageservice";
 import * as monaco from "monaco-editor";
 import { languages, Position } from "monaco-editor";
-import { BaseASTNode } from "vscode-json-languageservice/lib/umd/jsonLanguageTypes";
+import { ASTNode, ObjectASTNode, PropertyASTNode } from "../../language/parser";
 import { AbstractCompletionHelper, CompletionContext } from "./CompletionHelper";
 
 const FUNCTIONS_NODE = "functions";
@@ -54,7 +53,7 @@ function buildFunctionObjectProperties(name: string) {
   return `\n    "name": "${name}",\n    "operation": "http://myservice.com/openapi.json#${name}"\n`;
 }
 
-function checkFunctionsPropertyNode(functionsNode: BaseASTNode): boolean {
+function checkFunctionsPropertyNode(functionsNode: ASTNode): boolean {
   // check if node is a the functions node in the root object and the type is an array.
   if (functionsNode.type !== "array") {
     return false;
@@ -73,9 +72,14 @@ function checkFunctionsPropertyNode(functionsNode: BaseASTNode): boolean {
   return asProp.keyNode && asProp.keyNode.value.toLowerCase() === FUNCTIONS_NODE;
 }
 
-export class FullFunctionObjectCompletionHelper extends AbstractCompletionHelper {
+export class FunctionObjectCompletionHelper extends AbstractCompletionHelper {
   buildSuggestions = (context: CompletionContext): languages.CompletionItem[] | undefined => {
-    return [];
+    return [
+      buildFunctionSuggestions("function1", context.monacoContext.position),
+      buildFunctionSuggestions("function2", context.monacoContext.position),
+      buildFunctionSuggestions("function3", context.monacoContext.position),
+      buildFunctionSuggestions("function4", context.monacoContext.position),
+    ];
   };
 
   public matches = (node: ASTNode): boolean => {
@@ -83,9 +87,14 @@ export class FullFunctionObjectCompletionHelper extends AbstractCompletionHelper
   };
 }
 
-export class FunctionObjectPropsCompletionHelper extends AbstractCompletionHelper {
+export class FunctionObjectContentCompletionHelper extends AbstractCompletionHelper {
   public buildSuggestions = (context: CompletionContext): languages.CompletionItem[] | undefined => {
-    return [];
+    return [
+      buildFunctionObjectSuggestions("function1", context.monacoContext.position),
+      buildFunctionObjectSuggestions("function2", context.monacoContext.position),
+      buildFunctionObjectSuggestions("function3", context.monacoContext.position),
+      buildFunctionObjectSuggestions("function4", context.monacoContext.position),
+    ];
   };
 
   public matches = (node: ASTNode): boolean => {
@@ -98,10 +107,16 @@ export class FunctionObjectPropsCompletionHelper extends AbstractCompletionHelpe
       return false;
     }
 
+    if (node.type === "null") {
+      return true;
+    }
+
     if (node.type !== "object") {
       return false;
     }
 
-    return !(node.properties && node.properties.length > 0);
+    const objetNode = node as ObjectASTNode;
+
+    return !(objetNode.properties && objetNode.properties.length > 0);
   };
 }

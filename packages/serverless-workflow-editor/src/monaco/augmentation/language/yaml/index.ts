@@ -16,6 +16,8 @@
 
 import { MonacoLanguage } from "../MonacoLanguage";
 import { setDiagnosticsOptions } from "monaco-yaml";
+import { TextDocument } from "vscode-languageserver-types";
+
 import {
   SW_SPEC_COMMON_SCHEMA,
   SW_SPEC_EVENTS_SCHEMA,
@@ -24,45 +26,57 @@ import {
   SW_SPEC_SCHEMA,
 } from "../schemas";
 import { JSONSchema7 } from "json-schema";
+import { parse } from "./parser";
+import { ASTDocument } from "../parser";
+
+setDiagnosticsOptions({
+  enableSchemaRequest: true,
+  hover: true,
+  completion: true,
+  validate: true,
+  format: true,
+  schemas: [
+    {
+      uri: "common.json",
+      fileMatch: ["*"],
+      schema: SW_SPEC_COMMON_SCHEMA,
+    },
+    {
+      uri: "events.json",
+      fileMatch: ["*"],
+      schema: SW_SPEC_EVENTS_SCHEMA as JSONSchema7,
+    },
+    {
+      uri: "functions.json",
+      fileMatch: ["*"],
+      schema: SW_SPEC_FUNCTIONS_SCHEMA as JSONSchema7,
+    },
+    {
+      uri: "retries.json",
+      fileMatch: ["*"],
+      schema: SW_SPEC_RETRIES_SCHEMA as JSONSchema7,
+    },
+    {
+      uri: "workflow.json",
+      fileMatch: ["*"],
+      schema: SW_SPEC_SCHEMA as JSONSchema7,
+    },
+  ],
+});
 
 export function initYAMLLanguage(): MonacoLanguage {
-  setDiagnosticsOptions({
-    enableSchemaRequest: true,
-    hover: true,
-    completion: true,
-    validate: true,
-    format: true,
-    schemas: [
-      {
-        uri: "common.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_COMMON_SCHEMA,
-      },
-      {
-        uri: "events.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_EVENTS_SCHEMA as JSONSchema7,
-      },
-      {
-        uri: "functions.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_FUNCTIONS_SCHEMA as JSONSchema7,
-      },
-      {
-        uri: "retries.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_RETRIES_SCHEMA as JSONSchema7,
-      },
-      {
-        uri: "workflow.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_SCHEMA as JSONSchema7,
-      },
-    ],
-  });
-
   return {
     languageId: "yaml",
+
+    parser: {
+      parseContent(content: TextDocument): ASTDocument {
+        const yamlDocs = parse(content.getText());
+        if (!yamlDocs || yamlDocs.documents.length != 1) {
+          throw new Error("Cannot correctly parse YAML content");
+        }
+        return yamlDocs.documents[0];
+      },
+    },
 
     getDefaultContent: (content) => {
       if (!content) {
