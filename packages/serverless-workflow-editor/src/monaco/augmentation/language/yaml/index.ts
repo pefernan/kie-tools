@@ -26,8 +26,6 @@ import {
   SW_SPEC_SCHEMA,
 } from "../schemas";
 import { JSONSchema7 } from "json-schema";
-import { parse } from "./parser";
-import { ASTDocument } from "../parser";
 
 setDiagnosticsOptions({
   enableSchemaRequest: true,
