@@ -21,6 +21,8 @@ import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 import "./HistoryButtons.scss";
+import { ApicurioClient, ApicurioClientRef } from "./apicurio/ApicurioClient";
+import { EditorApi } from "@kie-tooling-core/editor/dist/api";
 
 export enum Theme {
   LIGHT,
@@ -37,7 +39,7 @@ interface HistoryButtonsProps {
 
 export const HistoryButtons = (props: HistoryButtonsProps) => {
   const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
-
+  const apicurioClient = useRef<ApicurioClientRef>();
   return (
     <div className="history-buttons ignore-onclickoutside">
       <Split hasGutter={true}>
@@ -58,6 +60,12 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
           <Button variant="secondary" onClick={props.validate} ouiaId="validate-button">
             Validate
           </Button>
+        </SplitItem>
+        <SplitItem>
+          <Button variant="secondary" onClick={() => apicurioClient.current?.show()} ouiaId="validate-button">
+            Apicurio
+          </Button>
+          <ApicurioClient ref={apicurioClient} />
         </SplitItem>
         <SplitItem className="history-buttons__theme-switch">
           <Switch

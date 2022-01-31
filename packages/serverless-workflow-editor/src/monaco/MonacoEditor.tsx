@@ -17,7 +17,6 @@
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { buildEditor, MonacoEditorApi } from "./augmentation";
-import * as path from "path";
 
 interface Props {
   content: string;
