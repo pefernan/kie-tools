@@ -30,6 +30,7 @@
     "@kie-tools-core/keyboard-shortcuts": "0.0.0",
     "@kie-tools-core/vscode-java-code-completion": "0.0.0",
     "@kie-tools-core/workspace": "0.0.0",
+    "@kie-tools-core/service-catalog": "0.0.0",
     "minimatch": "^3.0.4"
   },
   "devDependencies": {

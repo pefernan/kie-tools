@@ -57,20 +57,13 @@ export function initCompletion(augmentation: MonacoAugmentation): void {
 
       const node = astDocument.getNodeFromOffset(offset);
 
-      const suggestions: languages.CompletionItem[] = [];
-
-      const consumer = (helperSuggestions: languages.CompletionItem[]): void => {
-        if (helperSuggestions) {
-          suggestions.push(...helperSuggestions);
-        }
-      };
-
       if (node) {
-        MonacoCompletionHelper.fillSuggestions(consumer, {
+        return MonacoCompletionHelper.getSuggestions({
           astDocument,
           node,
           document,
           language: augmentation.language,
+          catalog: augmentation.catalogService,
           monacoContext: {
             model,
             context,
@@ -80,9 +73,7 @@ export function initCompletion(augmentation: MonacoAugmentation): void {
         });
       }
 
-      return {
-        suggestions,
-      };
+      return undefined;
     },
   });
 }

@@ -17,7 +17,10 @@
 import * as monaco from "monaco-editor";
 import { languages, Position } from "monaco-editor";
 import { ASTNode, ObjectASTNode, PropertyASTNode } from "../../language/parser";
-import { AbstractCompletionHelper, CompletionContext } from "./CompletionHelper";
+import { CompletionContext, CompletionHelper } from "./CompletionHelper";
+import { MonacoLanguage } from "../../language";
+import { FunctionDefinition } from "@kie-tools-core/service-catalog/src/api";
+import { ServiceDefinition } from "@kie-tools-core/service-catalog/dist/api";
 
 const FUNCTIONS_NODE = "functions";
 
@@ -72,19 +75,66 @@ function checkFunctionsPropertyNode(functionsNode: ASTNode): boolean {
   return asProp.keyNode && asProp.keyNode.value.toLowerCase() === FUNCTIONS_NODE;
 }
 
-export class FunctionObjectCompletionHelper extends AbstractCompletionHelper {
-  buildSuggestions = (context: CompletionContext): languages.CompletionItem[] | undefined => {
-    return [];
-  };
+interface SWFunctionDef {
+  name: string;
+  operation: string;
+  type: string;
+}
 
-  public matches = (node: ASTNode): boolean => {
-    return checkFunctionsPropertyNode(node);
+function functionDef2Suggestion(
+  def: SWFunctionDef,
+  position: Position,
+  language: MonacoLanguage
+): languages.CompletionItem {
+  return {
+    label: def.name,
+    kind: monaco.languages.CompletionItemKind.Value,
+    insertText: language.getStringValue(def),
+    range: {
+      startLineNumber: position.lineNumber,
+      endLineNumber: position.lineNumber,
+      startColumn: position.column,
+      endColumn: position.column,
+    },
   };
 }
 
-export class FunctionObjectContentCompletionHelper extends AbstractCompletionHelper {
-  public buildSuggestions = (context: CompletionContext): languages.CompletionItem[] | undefined => {
-    return [];
+export class FunctionObjectCompletionHelper implements CompletionHelper {
+  public matches = (node: ASTNode): boolean => {
+    return checkFunctionsPropertyNode(node);
+  };
+
+  getSuggestions = (context: CompletionContext): Promise<languages.CompletionItem[]> => {
+    console.log("FunctionObjectCompletionHelper");
+    return new Promise<languages.CompletionItem[]>((resolve) => {
+      context.catalog.getServiceCatalog().then((services: ServiceDefinition[]) => {
+        const suggestions: languages.CompletionItem[] = [];
+
+        services.forEach((service) => {
+          service.functions.forEach((def) => {
+            const suggestion = functionDef2Suggestion(
+              { name: def.name, operation: def.operation, type: def.type },
+              context.monacoContext.position,
+              context.language
+            );
+            suggestions.push(suggestion);
+          });
+        });
+
+        resolve(suggestions);
+      });
+    });
+
+    return Promise.resolve([]);
+  };
+}
+
+export class FunctionObjectContentCompletionHelper implements CompletionHelper {
+  getSuggestions = (context: CompletionContext): Thenable<languages.CompletionItem[]> => {
+    console.log("FunctionObjectContentCompletionHelper");
+    context.catalog.getServiceCatalog();
+    console.log("end");
+    return Promise.resolve([]);
   };
 
   public matches = (node: ASTNode): boolean => {

@@ -27,6 +27,7 @@ import {
 } from "@kie-tools-core/workspace/dist/api";
 import { EmbeddedEditorFile } from "../../channel";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { FunctionDefinition, ServiceDefinition } from "@kie-tools-core/service-catalog/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
@@ -105,5 +106,9 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
 
   public kogitoNotifications_removeNotifications(path: string): void {
     this.overrides.kogitoNotifications_removeNotifications?.(path);
+  }
+
+  public kogitoServiceCatalog_getServiceCatalog(): Promise<ServiceDefinition[]> {
+    return this.overrides.kogitoServiceCatalog_getServiceCatalog?.() ?? Promise.resolve([]);
   }
 }

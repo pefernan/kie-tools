@@ -28,11 +28,20 @@ class MonacoCompletionHelper {
     this.helpers = [new FunctionObjectCompletionHelper(), new FunctionObjectContentCompletionHelper()];
   }
 
-  public fillSuggestions(
-    consumer: (suggestions: languages.CompletionItem[]) => void,
-    context: CompletionContext
-  ): void {
-    this.helpers.forEach((helper) => helper.fillSuggestions(consumer, context));
+  public getSuggestions(context: CompletionContext): Promise<languages.CompletionList> {
+    return new Promise<languages.CompletionList>((resolve) => {
+      const promises: Thenable<languages.CompletionItem[]>[] = this.helpers
+        .filter((helper) => helper.matches(context.node))
+        .map((helper) => helper.getSuggestions(context));
+
+      Promise.all(promises).then((items) => {
+        const array: languages.CompletionItem[] = [];
+        const suggestions: languages.CompletionItem[] = array.concat(...items);
+        resolve({
+          suggestions,
+        });
+      });
+    });
   }
 }
 

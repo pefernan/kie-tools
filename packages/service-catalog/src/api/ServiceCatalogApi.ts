@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-import { MonacoLanguage } from "./language";
-import { FunctionDefinition, ServiceDefinition } from "@kie-tools-core/service-catalog/dist/api";
+import { ServiceDefinition } from "./types";
 
-export interface MonacoAugmentation {
-  language: MonacoLanguage;
-  catalogService: CatalogService;
-}
-
-export interface CatalogService {
-  getServiceCatalog: () => Promise<ServiceDefinition[]>;
+export interface ServiceCatalogApi {
+  kogitoServiceCatalog_getServiceCatalog(): Promise<ServiceDefinition[]>;
 }

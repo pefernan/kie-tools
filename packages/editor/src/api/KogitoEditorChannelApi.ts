@@ -19,6 +19,7 @@ import { NotificationsApi } from "@kie-tools-core/notifications/dist/api";
 import { GuidedTourChannelApi } from "@kie-tools-core/guided-tour/dist/api";
 import { I18nChannelApi } from "@kie-tools-core/i18n/dist/api";
 import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
+import { ServiceCatalogApi } from "@kie-tools-core/service-catalog/dist/api";
 import { EditorContent } from "./EditorContent";
 import { StateControlCommand } from "./StateControlCommand";
 
@@ -27,7 +28,8 @@ export interface KogitoEditorChannelApi
     I18nChannelApi,
     CapabilityChannelApi,
     WorkspaceApi,
-    NotificationsApi {
+    NotificationsApi,
+    ServiceCatalogApi {
   kogitoEditor_ready(): void;
   kogitoEditor_setContentError(content: EditorContent): void;
   kogitoEditor_stateControlCommandUpdate(command: StateControlCommand): void;

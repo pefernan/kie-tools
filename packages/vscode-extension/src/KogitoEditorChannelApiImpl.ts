@@ -31,10 +31,11 @@ import { Notification, NotificationsApi } from "@kie-tools-core/notifications/di
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
-  JavaCodeCompletionApi,
   JavaCodeCompletionAccessor,
+  JavaCodeCompletionApi,
   JavaCodeCompletionClass,
 } from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import { ServiceCatalogApi, ServiceDefinition } from "@kie-tools-core/service-catalog/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   private readonly decoder = new TextDecoder("utf-8");
@@ -46,6 +47,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     private readonly backendProxy: BackendProxy,
     private readonly notificationsApi: NotificationsApi,
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
+    private readonly serviceCatalogApi: ServiceCatalogApi,
     private readonly viewType: string,
     private readonly i18n: I18n<VsCodeI18n>,
     private initialBackup = editor.document.initialBackup
@@ -148,10 +150,16 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   public kogitoJavaCodeCompletion_getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
     return this.javaCodeCompletionApi.getAccessors(fqcn, query);
   }
+
   public kogitoJavaCodeCompletion_getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
     return this.javaCodeCompletionApi.getClasses(query);
   }
+
   public kogitoJavaCodeCompletion_isLanguageServerAvailable(): Promise<boolean> {
     return this.javaCodeCompletionApi.isLanguageServerAvailable();
+  }
+
+  kogitoServiceCatalog_getServiceCatalog(): Promise<ServiceDefinition[]> {
+    return this.serviceCatalogApi.kogitoServiceCatalog_getServiceCatalog();
   }
 }

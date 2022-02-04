@@ -18,6 +18,7 @@ import { CancellationToken, editor, languages, Position } from "monaco-editor";
 import { ASTDocument, ASTNode } from "../../language/parser";
 import { TextDocument } from "vscode-languageserver-types";
 import { MonacoLanguage } from "../../language";
+import { CatalogService } from "../../MonacoAugmentation";
 
 export type MonacoCompletionContext = {
   model: editor.ITextModel;
@@ -31,23 +32,11 @@ export type CompletionContext = {
   astDocument: ASTDocument;
   document: TextDocument;
   language: MonacoLanguage;
+  catalog: CatalogService;
   monacoContext: MonacoCompletionContext;
 };
 
 export interface CompletionHelper {
-  fillSuggestions: (consumer: (suggestions: languages.CompletionItem[]) => void, context: CompletionContext) => void;
-}
-
-export abstract class AbstractCompletionHelper implements CompletionHelper {
-  abstract matches: (node: ASTNode) => boolean;
-  abstract buildSuggestions: (context: CompletionContext) => languages.CompletionItem[] | undefined;
-
-  fillSuggestions(consumer: (suggestions: languages.CompletionItem[]) => void, context: CompletionContext): void {
-    if (context.node && this.matches(context.node)) {
-      const suggestions = this.buildSuggestions(context);
-      if (suggestions) {
-        consumer(suggestions);
-      }
-    }
-  }
+  matches: (node: ASTNode) => boolean;
+  getSuggestions: (context: CompletionContext) => Thenable<languages.CompletionItem[]>;
 }

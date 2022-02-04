@@ -29,6 +29,7 @@ import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
 import { MonacoEditor, MonacoEditorRef } from "../monaco/MonacoEditor";
+import { ServiceDefinition } from "@kie-tools-core/service-catalog/dist/api";
 
 interface Props {
   /**
@@ -52,6 +53,8 @@ interface Props {
    * @param notifications List of Notifications
    */
   setNotifications: (path: string, notifications: Notification[]) => void;
+
+  getServiceCatalog: () => Promise<ServiceDefinition[]>;
 }
 
 export type ServerlessWorkflowEditorRef = {
@@ -149,6 +152,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
               fileName={path}
               onContentChange={setContent}
               ref={monacoEditorRef}
+              getServiceCatalog={props.getServiceCatalog}
             />
           )}
         </DrawerContentBody>
