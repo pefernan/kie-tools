@@ -14,14 +14,26 @@
  * limitations under the License.
  */
 
-import { MonacoLanguage } from "./language";
-import { FunctionDefinition, ServiceDefinition } from "@kie-tools-core/service-catalog/dist/api";
-
-export interface MonacoAugmentation {
-  language: MonacoLanguage;
-  catalogService: CatalogService;
+export enum ServiceType {
+  rest = "rest",
+  graphql = "graphql",
 }
 
-export interface CatalogService {
-  getServiceCatalog: () => Promise<ServiceDefinition[]>;
+export interface ServiceDefinition {
+  name: string;
+  id: string;
+  type: ServiceType;
+  functions: FunctionDefinition[];
+}
+
+export enum FunctionType {
+  rest = "rest",
+  graphql = "graphql",
+}
+
+export interface FunctionDefinition {
+  name: string;
+  operation: string;
+  arguments: Record<string, any>;
+  type: FunctionType;
 }

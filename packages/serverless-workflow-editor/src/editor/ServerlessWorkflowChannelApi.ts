@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 
-import { MonacoLanguage } from "./language";
-import { FunctionDefinition, ServiceDefinition } from "@kie-tools-core/service-catalog/dist/api";
+import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import { ServiceCatalogApi } from "@kie-tools-core/service-catalog/dist/api";
 
-export interface MonacoAugmentation {
-  language: MonacoLanguage;
-  catalogService: CatalogService;
-}
-
-export interface CatalogService {
-  getServiceCatalog: () => Promise<ServiceDefinition[]>;
-}
+export interface ServerlessWorkflowChannelApi extends KogitoEditorChannelApi, ServiceCatalogApi {}

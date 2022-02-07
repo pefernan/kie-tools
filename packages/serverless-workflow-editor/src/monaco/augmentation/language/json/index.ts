@@ -79,6 +79,6 @@ export function lookupJSONLanguage(): MonacoLanguage {
       return content;
     },
 
-    getStringValue: (object) => JSON.stringify(object),
+    getStringValue: (object) => JSON.stringify(object, null, 2),
   };
 }

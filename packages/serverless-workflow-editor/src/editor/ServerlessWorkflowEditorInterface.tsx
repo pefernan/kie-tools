@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  Editor,
-  EditorApi,
-  KogitoEditorChannelApi,
-  KogitoEditorEnvelopeContextType,
-} from "@kie-tools-core/editor/dist/api";
+import { Editor, EditorApi, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { ServerlessWorkflowEditor } from "./ServerlessWorkflowEditor";
+import { ServerlessWorkflowChannelApi } from "./ServerlessWorkflowChannelApi";
 
 export class ServerlessWorkflowEditorInterface implements Editor {
   private editorRef: React.RefObject<EditorApi>;
@@ -30,7 +26,7 @@ export class ServerlessWorkflowEditorInterface implements Editor {
   public af_componentId: "serverless-workflow-editor";
   public af_componentTitle: "Serverless Workflow Editor";
 
-  constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>) {
+  constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowChannelApi>) {
     this.editorRef = React.createRef<EditorApi>();
   }
 
@@ -59,6 +55,9 @@ export class ServerlessWorkflowEditorInterface implements Editor {
         setNotifications={(path, notifications) =>
           this.envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(path, notifications)
         }
+        getServiceCatalog={() => {
+          return this.envelopeContext.channelApi.requests.kogitoServiceCatalog_getServiceCatalog();
+        }}
       />
     );
   }

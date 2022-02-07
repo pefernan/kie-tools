@@ -19,14 +19,14 @@ import {
   EditorFactory,
   EditorInitArgs,
   KogitoEditorEnvelopeContextType,
-  KogitoEditorChannelApi,
 } from "@kie-tools-core/editor/dist/api";
+import { ServerlessWorkflowChannelApi } from "./ServerlessWorkflowChannelApi";
 
 export const FACTORY_TYPE = "serverless-workflow";
 
-export class ServerlessWorkflowEditorFactory implements EditorFactory<Editor, KogitoEditorChannelApi> {
+export class ServerlessWorkflowEditorFactory implements EditorFactory<Editor, ServerlessWorkflowChannelApi> {
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<Editor> {
     return Promise.resolve(new ServerlessWorkflowEditorInterface(envelopeContext));
