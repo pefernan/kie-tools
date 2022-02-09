@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { ServiceDefinition } from "./types";
+import { FunctionDefinition, ServiceDefinition } from "./types";
 
 export interface ServiceCatalogApi {
   kogitoServiceCatalog_getServiceCatalog(): Promise<ServiceDefinition[]>;
+  kogitoServiceCatalog_getFunctionDefinitions(serviceId?: string): Promise<FunctionDefinition[]>;
 }

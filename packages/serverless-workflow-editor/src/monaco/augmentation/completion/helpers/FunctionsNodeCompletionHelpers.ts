@@ -16,44 +16,12 @@
 
 import * as monaco from "monaco-editor";
 import { languages, Position } from "monaco-editor";
-import { ServiceDefinition, FunctionDefinition } from "@kie-tools-core/service-catalog/dist/api";
 import { ASTNode, ObjectASTNode, PropertyASTNode } from "../../language/parser";
 import { CompletionContext, CompletionHelper } from "./CompletionHelper";
 import { MonacoLanguage } from "../../language";
+import { FunctionDefinition } from "@kie-tools/service-catalog/dist/api";
 
 const FUNCTIONS_NODE = "functions";
-
-function buildFunctionSuggestions(name: string, position: Position): languages.CompletionItem {
-  return {
-    label: name,
-    kind: monaco.languages.CompletionItemKind.Snippet,
-    insertText: `{ ${buildFunctionObjectProperties(name)}},`,
-    range: {
-      startLineNumber: position.lineNumber,
-      endLineNumber: position.lineNumber,
-      startColumn: position.column,
-      endColumn: position.column,
-    },
-  };
-}
-
-function buildFunctionObjectSuggestions(name: string, position: Position): languages.CompletionItem {
-  return {
-    label: name,
-    kind: monaco.languages.CompletionItemKind.Value,
-    insertText: buildFunctionObjectProperties(name),
-    range: {
-      startLineNumber: position.lineNumber,
-      endLineNumber: position.lineNumber,
-      startColumn: position.column,
-      endColumn: position.column,
-    },
-  };
-}
-
-function buildFunctionObjectProperties(name: string) {
-  return `\n    "name": "${name}",\n    "operation": "http://myservice.com/openapi.json#${name}"\n`;
-}
 
 function checkFunctionsPropertyNode(functionsNode: ASTNode): boolean {
   // check if node is a the functions node in the root object and the type is an array.
@@ -81,14 +49,14 @@ interface SWFunctionDef {
 }
 
 function functionDef2Suggestion(
-  def: SWFunctionDef,
+  functionDefinition: SWFunctionDef,
   position: Position,
   language: MonacoLanguage
 ): languages.CompletionItem {
   return {
-    label: def.name,
+    label: functionDefinition.operation,
     kind: monaco.languages.CompletionItemKind.Value,
-    insertText: language.getStringValue(def),
+    insertText: language.getStringValue(functionDefinition),
     range: {
       startLineNumber: position.lineNumber,
       endLineNumber: position.lineNumber,
@@ -106,18 +74,16 @@ export class FunctionObjectCompletionHelper implements CompletionHelper {
   getSuggestions = (context: CompletionContext): Promise<languages.CompletionItem[]> => {
     console.log("FunctionObjectCompletionHelper");
     return new Promise<languages.CompletionItem[]>((resolve) => {
-      context.catalog.getServiceCatalog().then((services: ServiceDefinition[]) => {
+      context.catalog.getFunctions().then((functions: FunctionDefinition[]) => {
         const suggestions: languages.CompletionItem[] = [];
 
-        services.forEach((service) => {
-          service.functions.forEach((def: FunctionDefinition) => {
-            const suggestion = functionDef2Suggestion(
-              { name: def.name, operation: def.operation, type: def.type },
-              context.monacoContext.position,
-              context.language
-            );
-            suggestions.push(suggestion);
-          });
+        functions.forEach((def: FunctionDefinition) => {
+          const suggestion = functionDef2Suggestion(
+            { name: def.name, operation: def.operation, type: def.type },
+            context.monacoContext.position,
+            context.language
+          );
+          suggestions.push(suggestion);
         });
 
         resolve(suggestions);

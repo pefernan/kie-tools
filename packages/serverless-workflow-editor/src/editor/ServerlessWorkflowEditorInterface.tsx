@@ -58,6 +58,9 @@ export class ServerlessWorkflowEditorInterface implements Editor {
         getServiceCatalog={() => {
           return this.envelopeContext.channelApi.requests.kogitoServiceCatalog_getServiceCatalog();
         }}
+        getFunctions={(serviceId) => {
+          return this.envelopeContext.channelApi.requests.kogitoServiceCatalog_getFunctionDefinitions(serviceId);
+        }}
       />
     );
   }

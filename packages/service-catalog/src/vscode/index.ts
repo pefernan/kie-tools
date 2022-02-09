@@ -15,3 +15,4 @@
  */
 
 export * from "./VsCodeServiceCatalogApi";
+export * from "./registry";

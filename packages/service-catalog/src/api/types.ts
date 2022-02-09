@@ -23,16 +23,17 @@ export interface ServiceDefinition {
   name: string;
   id: string;
   type: ServiceType;
-  functions: FunctionDefinition[];
 }
 
 export enum FunctionType {
   rest = "rest",
   graphql = "graphql",
+  async = "async",
 }
 
 export interface FunctionDefinition {
   name: string;
+  serviceId: string;
   operation: string;
   arguments: Record<string, any>;
   type: FunctionType;

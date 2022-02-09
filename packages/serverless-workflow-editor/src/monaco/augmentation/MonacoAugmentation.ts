@@ -15,7 +15,7 @@
  */
 
 import { MonacoLanguage } from "./language";
-import { FunctionDefinition, ServiceDefinition } from "@kie-tools-core/service-catalog/dist/api";
+import { FunctionDefinition, ServiceDefinition } from "@kie-tools/service-catalog/dist/api";
 
 export interface MonacoAugmentation {
   language: MonacoLanguage;
@@ -24,4 +24,5 @@ export interface MonacoAugmentation {
 
 export interface CatalogService {
   getServiceCatalog: () => Promise<ServiceDefinition[]>;
+  getFunctions: (serviceId?: string) => Promise<FunctionDefinition[]>;
 }

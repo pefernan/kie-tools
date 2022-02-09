@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import { ServiceDefinition } from "../../api";
+import { FunctionDefinition, ServiceDefinition } from "../../api";
 
 export interface ServiceCatalogRegistry {
   getServiceCatalog(): Promise<ServiceDefinition[]>;
+
+  getFunctions(serviceId?: string): Promise<FunctionDefinition[]>;
 
   persistService(serviceId: string): void;
 }

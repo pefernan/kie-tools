@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools-core/service-catalog",
+  "name": "@kie-tools/service-catalog",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -17,7 +17,10 @@
     "build:dev": "rimraf dist && tsc -p tsconfig.dev.json",
     "build:prod": "yarn lint && rimraf dist && tsc -p tsconfig.prod.json && yarn test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@types/js-yaml": "^4.0.5",
+    "js-yaml": "^4.1.0"
+  },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0"
   },

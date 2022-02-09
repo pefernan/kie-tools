@@ -17,13 +17,14 @@
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
 import { buildEditor, MonacoEditorApi } from "./augmentation";
-import { ServiceDefinition } from "@kie-tools-core/service-catalog/dist/api";
+import { FunctionDefinition, ServiceDefinition } from "@kie-tools/service-catalog/dist/api";
 
 interface Props {
   content: string;
   fileName: string;
   onContentChange: (content: string) => void;
   getServiceCatalog: () => Promise<ServiceDefinition[]>;
+  getFunctions: (serviceId?: string) => Promise<FunctionDefinition[]>;
 }
 
 export interface MonacoEditorRef {
@@ -32,12 +33,12 @@ export interface MonacoEditorRef {
 }
 
 const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorRef | undefined, Props> = (
-  { content, fileName, onContentChange, getServiceCatalog },
+  { content, fileName, onContentChange, getServiceCatalog, getFunctions },
   forwardedRef
 ) => {
   const editorContainer = useRef<HTMLDivElement>(null);
   const monacoInstance: MonacoEditorApi = useMemo<MonacoEditorApi>(() => {
-    return buildEditor(content, fileName, onContentChange, getServiceCatalog);
+    return buildEditor(content, fileName, onContentChange, getServiceCatalog, getFunctions);
   }, [content, fileName]);
 
   useEffect(() => {

@@ -14,34 +14,23 @@
  * limitations under the License.
  */
 
-import { FunctionType, ServiceCatalogApi, ServiceDefinition, ServiceType } from "../api";
-import * as vscode from "vscode";
+import { FunctionDefinition, ServiceCatalogApi, ServiceDefinition } from "../api";
+import { ServiceCatalogRegistry } from "./registry";
 
 export class VsCodeServiceCatalogApi implements ServiceCatalogApi {
-  constructor() {}
+  constructor(private readonly registry?: ServiceCatalogRegistry) {}
 
-  kogitoServiceCatalog_getServiceCatalog(): Promise<ServiceDefinition[]> {
-    vscode.window.showInformationMessage("Requesting services");
-    return Promise.resolve([
-      {
-        name: "service",
-        id: "specs/service.yaml",
-        type: ServiceType.rest,
-        functions: [
-          {
-            name: "f1",
-            type: FunctionType.rest,
-            arguments: {},
-            operation: "specs/service.yaml#f1",
-          },
-          {
-            name: "f2",
-            type: FunctionType.rest,
-            arguments: {},
-            operation: "specs/service.yaml#f1",
-          },
-        ],
-      },
-    ]);
+  public kogitoServiceCatalog_getServiceCatalog(): Promise<ServiceDefinition[]> {
+    if (this.registry) {
+      return this.registry.getServiceCatalog();
+    }
+    return Promise.resolve([]);
+  }
+
+  public kogitoServiceCatalog_getFunctionDefinitions(serviceId?: string): Promise<FunctionDefinition[]> {
+    if (this.registry) {
+      return this.registry.getFunctions(serviceId);
+    }
+    return Promise.resolve([]);
   }
 }

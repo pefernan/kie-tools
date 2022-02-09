@@ -15,6 +15,6 @@
  */
 
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-import { ServiceCatalogApi } from "@kie-tools-core/service-catalog/dist/api";
+import { ServiceCatalogApi } from "@kie-tools/service-catalog/dist/api";
 
 export interface ServerlessWorkflowChannelApi extends KogitoEditorChannelApi, ServiceCatalogApi {}

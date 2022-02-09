@@ -18,7 +18,7 @@ import { DefaultMonacoEditor, MonacoEditorApi } from "./MonacoEditorApi";
 import { lookupLanguage } from "./language";
 import { initCompletion } from "./completion";
 import { MonacoAugmentation } from "./MonacoAugmentation";
-import { FunctionDefinition, ServiceDefinition } from "@kie-tools-core/service-catalog/dist/api";
+import { FunctionDefinition, ServiceDefinition } from "@kie-tools/service-catalog/dist/api";
 
 export { MonacoEditorApi } from "./MonacoEditorApi";
 export { MonacoAugmentation } from "./MonacoAugmentation";
@@ -27,12 +27,14 @@ export function buildEditor(
   content: string,
   fileName: string,
   onContentChange: (content: string) => void,
-  getServiceCatalog: () => Promise<ServiceDefinition[]>
+  getServiceCatalog: () => Promise<ServiceDefinition[]>,
+  getFunctions: (serviceId?: string) => Promise<FunctionDefinition[]>
 ): MonacoEditorApi {
   const augmentation: MonacoAugmentation = {
     language: lookupLanguage(fileName),
     catalogService: {
       getServiceCatalog,
+      getFunctions,
     },
   };
 

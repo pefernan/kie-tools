@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as vscode from "vscode";
 import { KogitoEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiProducer";
 import { ServerlessWorkflowChannelApiImpl } from "./ServerlessWorkflowChannelApiImpl";
 import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
@@ -25,6 +26,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { Uri } from "vscode";
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import { lookupCatalogRegistry, VsCodeServiceCatalogApi } from "@kie-tools/service-catalog/dist/vscode";
 
 export class ServerlessWorkflowChannelApiProducer implements KogitoEditorChannelApiProducer {
   get(
@@ -38,6 +40,11 @@ export class ServerlessWorkflowChannelApiProducer implements KogitoEditorChannel
     i18n: I18n<VsCodeI18n>,
     initialBackup?: Uri
   ): KogitoEditorChannelApi {
+    const registry = lookupCatalogRegistry({
+      filePath: editor.document.uri.fsPath,
+      specsStoragePath: vscode.workspace.getConfiguration().get("kogito.sw.specsStoragePath", "${fileDirname}/specs"),
+    });
+
     return new ServerlessWorkflowChannelApiImpl(
       editor,
       resourceContentService,
@@ -47,7 +54,8 @@ export class ServerlessWorkflowChannelApiProducer implements KogitoEditorChannel
       javaCodeCompletionApi,
       viewType,
       i18n,
-      initialBackup
+      initialBackup,
+      new VsCodeServiceCatalogApi(registry)
     );
   }
 }

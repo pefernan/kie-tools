@@ -29,7 +29,7 @@ import { MermaidDiagram } from "../diagram";
 import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
 import { MonacoEditor, MonacoEditorRef } from "../monaco/MonacoEditor";
-import { ServiceDefinition } from "@kie-tools-core/service-catalog/dist/api";
+import { FunctionDefinition, ServiceDefinition } from "@kie-tools/service-catalog/dist/api";
 
 interface Props {
   /**
@@ -55,6 +55,7 @@ interface Props {
   setNotifications: (path: string, notifications: Notification[]) => void;
 
   getServiceCatalog: () => Promise<ServiceDefinition[]>;
+  getFunctions: (serviceId?: string) => Promise<FunctionDefinition[]>;
 }
 
 export type ServerlessWorkflowEditorRef = {
@@ -153,6 +154,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
               onContentChange={setContent}
               ref={monacoEditorRef}
               getServiceCatalog={props.getServiceCatalog}
+              getFunctions={props.getFunctions}
             />
           )}
         </DrawerContentBody>

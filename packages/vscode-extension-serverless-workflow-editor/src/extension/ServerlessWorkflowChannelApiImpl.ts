@@ -17,7 +17,7 @@
 import { EditorContent, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { KogitoEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiImpl";
 import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
-import { ServiceCatalogApi, ServiceDefinition } from "@kie-tools-core/service-catalog/dist/api";
+import { ServiceCatalogApi, ServiceDefinition } from "@kie-tools/service-catalog/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import {
   KogitoEdit,
@@ -33,12 +33,11 @@ import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/src/i18n";
-import { VsCodeServiceCatalogApi } from "@kie-tools-core/service-catalog/dist/vscode";
 import { ServerlessWorkflowChannelApi } from "@kie-tools/serverless-workflow-editor";
+import { FunctionDefinition } from "@kie-tools/service-catalog/src/api";
 
 export class ServerlessWorkflowChannelApiImpl implements ServerlessWorkflowChannelApi {
   private readonly apiDelegate: KogitoEditorChannelApiImpl;
-  private readonly serviceCatalogDelegate: ServiceCatalogApi;
 
   constructor(
     private readonly editor: KogitoEditor,
@@ -49,7 +48,8 @@ export class ServerlessWorkflowChannelApiImpl implements ServerlessWorkflowChann
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>,
-    initialBackup = editor.document.initialBackup
+    initialBackup = editor.document.initialBackup,
+    private readonly serviceCatalogApi: ServiceCatalogApi
   ) {
     this.apiDelegate = new KogitoEditorChannelApiImpl(
       editor,
@@ -62,10 +62,9 @@ export class ServerlessWorkflowChannelApiImpl implements ServerlessWorkflowChann
       i18n,
       initialBackup
     );
-    this.serviceCatalogDelegate = new VsCodeServiceCatalogApi();
   }
 
-  kogitoEditor_contentRequest(): Promise<EditorContent> {
+  public kogitoEditor_contentRequest(): Promise<EditorContent> {
     return this.apiDelegate.kogitoEditor_contentRequest();
   }
 
@@ -121,7 +120,11 @@ export class ServerlessWorkflowChannelApiImpl implements ServerlessWorkflowChann
     return this.apiDelegate.kogitoWorkspace_resourceListRequest(request);
   }
 
-  kogitoServiceCatalog_getServiceCatalog(): Promise<ServiceDefinition[]> {
-    return this.serviceCatalogDelegate.kogitoServiceCatalog_getServiceCatalog();
+  public kogitoServiceCatalog_getServiceCatalog(): Promise<ServiceDefinition[]> {
+    return this.serviceCatalogApi.kogitoServiceCatalog_getServiceCatalog();
+  }
+
+  public kogitoServiceCatalog_getFunctionDefinitions(serviceId?: string): Promise<FunctionDefinition[]> {
+    return this.serviceCatalogApi.kogitoServiceCatalog_getFunctionDefinitions(serviceId);
   }
 }
