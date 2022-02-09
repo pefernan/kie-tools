@@ -18,6 +18,7 @@ import * as __path from "path";
 
 import { ServiceCatalogRegistry } from "./ServiceCatalogRegistry";
 import { FSServiceCatalogRegistry } from "./fs/FSServiceCatalogRegistry";
+import { ApicurioCatalogRegistry } from "./apicurio/ApicurioCatalogRegistry";
 export { ServiceCatalogRegistry } from "./ServiceCatalogRegistry";
 
 const FILE_DIRNAME = "${fileDirname}";
@@ -25,6 +26,7 @@ const FILE_DIRNAME = "${fileDirname}";
 export function lookupCatalogRegistry(args: {
   filePath: string;
   specsStoragePath: string;
+  apicurioRegistryUrl: string;
 }): ServiceCatalogRegistry | undefined {
   const parentDir = __path.parse(args.filePath).dir;
 
@@ -33,9 +35,11 @@ export function lookupCatalogRegistry(args: {
     ? storagePath.substring(storagePath.lastIndexOf("/") + 1)
     : storagePath;
   try {
-    return new FSServiceCatalogRegistry(baseSpecsFolder, storagePath);
+    if (args.apicurioRegistryUrl.trim().length === 0) {
+      return new FSServiceCatalogRegistry(baseSpecsFolder, storagePath);
+    }
+    return new ApicurioCatalogRegistry(args.apicurioRegistryUrl, baseSpecsFolder, storagePath);
   } catch (err) {
-    console.log(err);
     console.log(`Cannot open FSServiceCatalogRegistry in path: "${storagePath}"`);
   }
 }

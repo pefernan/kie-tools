@@ -43,6 +43,7 @@ export class ServerlessWorkflowChannelApiProducer implements KogitoEditorChannel
     const registry = lookupCatalogRegistry({
       filePath: editor.document.uri.fsPath,
       specsStoragePath: vscode.workspace.getConfiguration().get("kogito.sw.specsStoragePath", "${fileDirname}/specs"),
+      apicurioRegistryUrl: vscode.workspace.getConfiguration().get("kogito.sw.apicurioRegistry.url", ""),
     });
 
     return new ServerlessWorkflowChannelApiImpl(

@@ -24,7 +24,8 @@
     "@kie-tools-core/patternfly-base": "0.0.0",
     "@kie-tools-core/vscode-extension": "0.0.0",
     "@kie-tools-core/workspace": "0.0.0",
-    "@kie-tools/serverless-workflow-editor": "0.0.0"
+    "@kie-tools/serverless-workflow-editor": "0.0.0",
+    "xhr2": "^0.2.1"
   },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0"
@@ -124,6 +125,11 @@
           "type": "string",
           "default": "${fileDirname}/specs",
           "markdownDescription": "Folder where Openapi spec files are stored (defaults to a 'specs' folder in the same path as the sw file)."
+        },
+        "kogito.sw.apicurioRegistry.url": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "URL to the Apicurio registry."
         }
       }
     },
