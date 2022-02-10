@@ -17,8 +17,7 @@
 import { ServiceCatalogRegistry } from "../ServiceCatalogRegistry";
 import { FunctionDefinition, ServiceDefinition } from "../../../api";
 import { loadOpenAPIService } from "../parsers";
-import { ArtifactsApi, ArtifactState, Configuration } from "@rhoas/registry-instance-sdk";
-import { ArtifactType } from "@rhoas/registry-instance-sdk/src/generated/model/artifact-type";
+import { ArtifactsApi, ArtifactState, ArtifactType, Configuration } from "@rhoas/registry-instance-sdk";
 
 const APICURIO_APIS = "apis/registry/v2";
 
@@ -36,6 +35,7 @@ export class ApicurioCatalogRegistry implements ServiceCatalogRegistry {
     }
 
     console.log("ApicurioCatalogRegistry init ", apicurioRegistryUrl);
+
     const apiConfig = new Configuration({
       basePath: apicurioRegistryUrl,
     });
@@ -92,6 +92,9 @@ export class ApicurioCatalogRegistry implements ServiceCatalogRegistry {
               .catch((err) => console.log("content error", err));
           });
       })
-      .catch((err) => console.log("artifacts error", err));
+      .catch((err) => {
+        console.log("artifacts error", err);
+        console.trace(err);
+      });
   }
 }

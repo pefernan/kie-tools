@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+const path = require("path");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
@@ -65,7 +66,6 @@ module.exports = async (env) => [
         // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
         // `@kiegroup/monaco-editor`. This way, everything works as expected.
         //"monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
-        XMLHttpRequest: require.resolve("xhr2"),
       },
     },
     module: {
