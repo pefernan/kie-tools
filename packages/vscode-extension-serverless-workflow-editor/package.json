@@ -19,31 +19,39 @@
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
   },
   "dependencies": {
-    "@kie-tools-core/editor": "0.0.0",
-    "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tools-core/patternfly-base": "0.0.0",
-    "@kie-tools-core/envelope-bus": "0.0.0",
-    "@kie-tools-core/vscode-extension": "0.0.0",
-    "@kie-tools-core/workspace": "0.0.0",
-    "@kie-tools-core/guided-tour": "0.0.0",
     "@kie-tools-core/backend": "0.0.0",
+    "@kie-tools-core/editor": "0.0.0",
+    "@kie-tools-core/envelope-bus": "0.0.0",
+    "@kie-tools-core/guided-tour": "0.0.0",
+    "@kie-tools-core/i18n": "0.0.0",
     "@kie-tools-core/notifications": "0.0.0",
+    "@kie-tools-core/patternfly-base": "0.0.0",
+    "@kie-tools-core/vscode-extension": "0.0.0",
     "@kie-tools-core/vscode-java-code-completion": "0.0.0",
+    "@kie-tools-core/workspace": "0.0.0",
     "@kie-tools/serverless-workflow-editor": "0.0.0",
-    "@kie-tools/serverless-workflow-service-catalog": "0.0.0",
     "@kie-tools/serverless-workflow-language-service": "0.0.0",
-    "yaml": "^2.0.1",
+    "@kie-tools/serverless-workflow-service-catalog": "0.0.0",
+    "@rhoas/registry-instance-sdk": "^0.33.2",
+    "assert": "^2.0.0",
+    "axios": "^0.27.2",
+    "crypto-browserify": "^3.12.0",
+    "https-browserify": "^1.0.0",
     "monaco-editor": "^0.33.0",
     "monaco-yaml": "^3.2.1",
-    "vscode-languageserver-textdocument": "^1.0.4",
     "openapi-types": "^7.0.1",
+    "openid-client": "^5.1.6",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.0",
+    "util": "^0.12.4",
+    "vscode-languageserver-textdocument": "^1.0.4",
     "vscode-languageserver-types": "^3.16.0",
-    "axios": "^0.27.2"
+    "yaml": "^2.0.1"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
     "@kie-tools-core/run-script-if": "0.0.0",
     "@kie-tools-core/webpack-base": "0.0.0",
+    "@kie-tools/build-env": "0.0.0",
     "monaco-editor-webpack-plugin": "^7.0.1"
   },
   "icon": "icon.png",
@@ -146,6 +154,75 @@
     "configuration": {
       "title": "Serverless Workflow Editor",
       "properties": {
+        "kogito.sw.serviceRegistry": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the service, will be used as identifier on autocomplete"
+              },
+              "url": {
+                "type": "string",
+                "format": "uri",
+                "pattern": "^(https?|http?)://"
+              },
+              "security": {
+                "type": "object",
+                "properties": {
+                  "authProvider": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "red-hat",
+                      "oidc"
+                    ],
+                    "enumDescriptions": [
+                      "No authentication",
+                      "Red Hat account login (Reequires the Red Hat Authentication extension)",
+                      "OpenId Connect"
+                    ],
+                    "default": "none"
+                  },
+                  "authUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^(https?|http?)://"
+                  },
+                  "clientId": {
+                    "type": "string"
+                  }
+                },
+                "allOf": [
+                  {
+                    "if": {
+                      "properties": {
+                        "authProvider": {
+                          "const": "oidc"
+                        }
+                      }
+                    },
+                    "then": {
+                      "required": [
+                        "authUrl",
+                        "clientId"
+                      ]
+                    }
+                  }
+                ],
+                "required": [
+                  "authProvider"
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "url"
+            ]
+          },
+          "markdownDescription": "Setup the registry."
+        },
         "kogito.sw.runOnSave": {
           "type": "string",
           "default": "extension.kogito.swf.silentlyGenerateSvg",
@@ -204,6 +281,10 @@
       {
         "command": "extension.kogito.swf.logInToRhhcc",
         "title": "Serverless Workflow: Log in to Red Hat Hybrid Cloud Console"
+      },
+      {
+        "command": "extension.kogito.swf.openIdLogin",
+        "title": "Serverless Workflow: OpenId login"
       },
       {
         "command": "extension.kogito.swf.setupServiceRegistryUrl",

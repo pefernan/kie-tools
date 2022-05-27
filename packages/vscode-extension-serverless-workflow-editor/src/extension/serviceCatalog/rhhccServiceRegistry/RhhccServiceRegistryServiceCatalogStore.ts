@@ -29,7 +29,7 @@ import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../c
 import * as vscode from "vscode";
 import * as yaml from "yaml";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "./index";
-import { getServiceRegistryRestApi } from "../apicurio";
+import { getServiceRegistryRestApi, getSwfServiceCatalogServices } from "../apicurio";
 
 export class RhhccServiceRegistryServiceCatalogStore {
   private subscriptions: Set<(services: SwfServiceCatalogService[]) => Promise<any>> = new Set();
@@ -88,48 +88,10 @@ export class RhhccServiceRegistryServiceCatalogStore {
       return Promise.all(Array.from(this.subscriptions).map((subscription) => subscription([])));
     }
 
-    const requestHeaders = {
-      headers: { Authorization: "Bearer " + this.args.rhhccAuthenticationStore.session.accessToken },
-    };
-
-    const serviceRegistryRestApi = getServiceRegistryRestApi(serviceRegistryUrl);
-
-    const artifactsMetadata: ServiceRegistryArtifactSearchResponse = (
-      await axios.get(serviceRegistryRestApi.getArtifactsUrl(), requestHeaders)
-    ).data;
-
-    const artifactsWithContent = await Promise.all(
-      artifactsMetadata.artifacts
-        .filter((artifactMetadata) => artifactMetadata.type === "OPENAPI")
-        .map(async (artifactMetadata) => ({
-          metadata: artifactMetadata,
-          content: (
-            await axios.get(serviceRegistryRestApi.getArtifactContentUrl(artifactMetadata), requestHeaders)
-          ).data as OpenAPIV3.Document,
-        }))
+    const services: SwfServiceCatalogService[] = await getSwfServiceCatalogServices(
+      serviceRegistryUrl,
+      this.args.rhhccAuthenticationStore.session.accessToken
     );
-
-    const services: SwfServiceCatalogService[] = artifactsWithContent.map((artifact) => {
-      const serviceId = artifact.metadata.id;
-      const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(serviceId);
-
-      const swfFunctions: SwfServiceCatalogFunction[] = extractFunctions(artifact.content, {
-        type: SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY,
-        serviceId: serviceId,
-      });
-
-      return {
-        name: serviceFileName,
-        rawContent: yaml.stringify(artifact.content),
-        type: SwfServiceCatalogServiceType.rest,
-        functions: swfFunctions,
-        source: {
-          url: serviceRegistryRestApi.getArtifactContentUrl(artifact.metadata),
-          type: SwfServiceCatalogServiceSourceType.RHHCC_SERVICE_REGISTRY,
-          id: serviceId,
-        },
-      };
-    });
 
     return Promise.all(Array.from(this.subscriptions).map((subscription) => subscription(services)));
   }

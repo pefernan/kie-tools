@@ -35,12 +35,33 @@ const commonConfig = (env) =>
 module.exports = async (env) => [
   merge(commonConfig(env), {
     target: "node",
+    resolve: {
+      extensions: [".tsx", ".ts", ".js", ".jsx"],
+      fallback: {
+        assert: require.resolve("assert"),
+        crypto: require.resolve("crypto-browserify"),
+        http: require.resolve("stream-http"),
+        https: require.resolve("https-browserify"),
+        url: require.resolve("url"),
+        util: require.resolve("util"),
+      },
+    },
     entry: {
       "extension/extension": "./src/extension/extension.ts",
     },
   }),
   merge(commonConfig(env), {
-    target: "webworker",
+    target: "node",
+    resolve: {
+      fallback: {
+        assert: require.resolve("assert"),
+        crypto: require.resolve("crypto-browserify"),
+        http: require.resolve("stream-http"),
+        https: require.resolve("https-browserify"),
+        url: require.resolve("url"),
+        util: require.resolve("util"),
+      },
+    },
     entry: {
       "extension/extensionWeb": "./src/extension/extension.ts",
     },

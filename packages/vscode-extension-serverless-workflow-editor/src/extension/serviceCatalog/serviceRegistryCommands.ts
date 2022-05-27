@@ -18,6 +18,7 @@ import * as vscode from "vscode";
 import { askForServiceRegistryUrl } from "./rhhccServiceRegistry";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../configuration";
 import { COMMAND_IDS } from "../commandIds";
+import { doOpenIdLogin, onOpenIdCallback } from "./security";
 
 export function setupServiceRegistryIntegrationCommands(args: {
   context: vscode.ExtensionContext;
@@ -29,6 +30,20 @@ export function setupServiceRegistryIntegrationCommands(args: {
     })
   );
 
+  args.context.subscriptions.push(
+    vscode.commands.registerCommand("extension.kogito.swf.openIdLogin", () => {
+      doOpenIdLogin();
+    })
+  );
+
+  args.context.subscriptions.push(
+    vscode.window.registerUriHandler({
+      handleUri(uri: vscode.Uri): vscode.ProviderResult<void> {
+        console.log("uri handler! ", uri);
+        onOpenIdCallback(uri);
+      },
+    })
+  );
   args.context.subscriptions.push(
     vscode.commands.registerCommand(COMMAND_IDS.setupServiceRegistryUrl, async () => {
       const serviceRegistryUrl = await askForServiceRegistryUrl({
