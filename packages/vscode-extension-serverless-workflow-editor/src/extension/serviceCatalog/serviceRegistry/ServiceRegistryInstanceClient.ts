@@ -39,7 +39,7 @@ export class ServiceRegistryInstanceClient {
     return this.args.name;
   }
 
-  public get autProvider() {
+  public get authProvider() {
     return this.args.authProvider;
   }
 

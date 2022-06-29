@@ -52,8 +52,8 @@ export class ServiceRegistriesStore {
     const result: AuthProvider[] = [];
 
     Array.from(this.registryClientStore.keys()).forEach((registryClient) => {
-      if (registryClient.autProvider) {
-        result.push(registryClient.autProvider);
+      if (registryClient.authProvider) {
+        result.push(registryClient.authProvider);
       }
     });
 
@@ -67,7 +67,7 @@ export class ServiceRegistriesStore {
   public get canRefreshServices() {
     return (
       Array.from(this.registryClientStore.keys()).find(
-        (registryClient) => !registryClient.autProvider || !registryClient.autProvider.shouldLogin()
+        (registryClient) => !registryClient.authProvider || !registryClient.authProvider.shouldLogin()
       ) !== undefined
     );
   }
