@@ -24,12 +24,13 @@ import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflow
 import { SwfVsCodeExtensionConfiguration, WEBVIEW_EDITOR_VIEW_TYPE } from "./configuration";
 import { setupServiceRegistryIntegrationCommands } from "./serviceCatalog/serviceRegistryCommands";
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
-import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { setupBuiltInVsCodeEditorSwfContributions } from "./builtInVsCodeEditorSwfContributions";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { setupDiagramEditorControls } from "./setupDiagramEditorControls";
 import { COMMAND_IDS } from "./commandIds";
 import { ServiceRegistriesStore } from "./serviceCatalog/serviceRegistry";
+import { SwfServiceCatalogStore } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/store";
+import { VsCodeSwfServiceCatalogSourceProvider } from "./serviceCatalog/VsCodeSwfServiceCatalogSourceProvider";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
@@ -49,10 +50,17 @@ export async function activate(context: vscode.ExtensionContext) {
     context,
   });
 
-  const swfServiceCatalogGlobalStore = new SwfServiceCatalogStore({ serviceRegistriesStore: serviceRegistriesStore });
+  const swfServiceCatalogGlobalStore = new SwfServiceCatalogStore({
+    sourceProvider: new VsCodeSwfServiceCatalogSourceProvider({
+      configuration,
+      context,
+    }),
+  });
+
   await swfServiceCatalogGlobalStore.init();
+
   console.info(
-    `SWF Service Catalog global store successfully initialized with ${swfServiceCatalogGlobalStore.storedServices.length} services.`
+    `SWF Service Catalog global store successfully initialized with ${swfServiceCatalogGlobalStore.services.length} services.`
   );
 
   const vsCodeSwfLanguageService = new VsCodeSwfLanguageService({

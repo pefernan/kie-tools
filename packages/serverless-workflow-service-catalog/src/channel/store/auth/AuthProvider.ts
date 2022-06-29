@@ -14,25 +14,14 @@
  * limitations under the License.
  */
 
-import { AuthProvider } from "./AuthProvider";
-import * as vscode from "vscode";
+export interface AuthProvider {
+  login(): Promise<void>;
 
-export class NoOpAuthProvider implements AuthProvider {
-  public getAuthHeader(): Promise<any> {
-    return Promise.resolve({});
-  }
+  getAuthHeader(): Promise<any>;
 
-  public login(): Promise<void> {
-    return Promise.resolve();
-  }
+  subscribeToSessionChange(substrciption: () => void): { dispose(): void };
 
-  public shouldLogin(): boolean {
-    return false;
-  }
+  shouldLogin(): boolean;
 
-  public subscribeToSessionChange(substrciption: () => void): vscode.Disposable {
-    return {
-      dispose: () => {},
-    };
-  }
+  dispose(): void;
 }

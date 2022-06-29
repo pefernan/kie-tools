@@ -14,5 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./VsCodeFsSwfServiceCatalogSource";
-export * from "./VsCodeFsSwfServiceCatalogSourceProvider";
+export * from "./ServiceRegistrySwfServiceCatalogSource";

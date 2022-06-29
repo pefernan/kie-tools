@@ -18,19 +18,29 @@ import * as vscode from "vscode";
 import { parseOpenApi } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
+import {
+  AuthProvider,
+  NoOpAuthProvider,
+  SwfServiceCatalogSource,
+} from "@kie-tools/serverless-workflow-service-catalog/dist/channel/store";
 
 const OPENAPI_EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
-export class FsWatchingServiceCatalogRelativeStore {
+export class VsCodeFsSwfServiceCatalogSource implements SwfServiceCatalogSource {
   private configurationChangedCallback: vscode.Disposable | undefined;
   private fsWatcher: vscode.Disposable | undefined;
   private services: SwfServiceCatalogService[] = [];
 
+  private readonly _authProvider: AuthProvider;
+
   constructor(
     private readonly args: { baseFileAbsolutePosixPath: string; configuration: SwfVsCodeExtensionConfiguration }
-  ) {}
+  ) {
+    this._authProvider = new NoOpAuthProvider();
+    this.init();
+  }
 
-  public init() {
+  private init() {
     const initialSpecsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath(
       this.args
     );
@@ -41,22 +51,16 @@ export class FsWatchingServiceCatalogRelativeStore {
     return this.refresh({ specsDirAbsolutePosixPath: initialSpecsDirAbsolutePosixPath });
   }
 
-  public get storedServices() {
-    return this.services;
+  public get authProvider() {
+    return this._authProvider;
   }
 
-  private getConfigurationChangedCallback() {
-    return vscode.workspace.onDidChangeConfiguration(async (e) => {
-      if (!e.affectsConfiguration(CONFIGURATION_SECTIONS.specsStoragePath)) {
-        return;
-      }
+  public get name() {
+    return "fsstorage";
+  }
 
-      const newSpecsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath(this.args);
-      this.fsWatcher?.dispose();
-      this.fsWatcher = this.setupFsWatcher({ specsDirAbsolutePosixPath: newSpecsDirAbsolutePosixPath });
-
-      return this.refresh({ specsDirAbsolutePosixPath: newSpecsDirAbsolutePosixPath });
-    });
+  public getSwfCatalogServices(): Promise<SwfServiceCatalogService[]> {
+    return Promise.resolve([]);
   }
 
   private setupFsWatcher(args: { specsDirAbsolutePosixPath: string }): vscode.Disposable {
@@ -86,7 +90,21 @@ export class FsWatchingServiceCatalogRelativeStore {
     this.configurationChangedCallback?.dispose();
   }
 
-  public async refresh(args: { specsDirAbsolutePosixPath: string }) {
+  private getConfigurationChangedCallback() {
+    return vscode.workspace.onDidChangeConfiguration(async (e) => {
+      if (!e.affectsConfiguration(CONFIGURATION_SECTIONS.specsStoragePath)) {
+        return;
+      }
+
+      const newSpecsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath(this.args);
+      this.fsWatcher?.dispose();
+      this.fsWatcher = this.setupFsWatcher({ specsDirAbsolutePosixPath: newSpecsDirAbsolutePosixPath });
+
+      return this.refresh({ specsDirAbsolutePosixPath: newSpecsDirAbsolutePosixPath });
+    });
+  }
+
+  private async refresh(args: { specsDirAbsolutePosixPath: string }) {
     try {
       this.services = await this.readFileSystemServices(args);
     } catch (e) {
@@ -158,9 +176,5 @@ export class FsWatchingServiceCatalogRelativeStore {
       console.error(e);
       return [];
     }
-  }
-
-  getServices() {
-    return this.services;
   }
 }

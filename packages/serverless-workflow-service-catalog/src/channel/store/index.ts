@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-import * as vscode from "vscode";
-
-export interface AuthProvider {
-  login(): Promise<void>;
-
-  getAuthHeader(): Promise<any>;
-
-  subscribeToSessionChange(substrciption: () => void): vscode.Disposable;
-
-  shouldLogin(): boolean;
-}
+export * from "./auth";
+export * from "./types";
+export * from "./SwfServiceCatalogSource";
+export * from "./SwfServiceCatalogSourcesProvider";
+export * from "./SwfServiceCatalogStore";

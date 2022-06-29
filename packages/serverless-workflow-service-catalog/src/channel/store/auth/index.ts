@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./VsCodeFsSwfServiceCatalogSource";
-export * from "./VsCodeFsSwfServiceCatalogSourceProvider";
+export * from "./AuthProvider";
+export * from "./NoOpAuthProvider";

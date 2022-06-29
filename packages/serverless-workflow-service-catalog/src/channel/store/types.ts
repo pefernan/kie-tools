@@ -14,5 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./VsCodeFsSwfServiceCatalogSource";
-export * from "./VsCodeFsSwfServiceCatalogSourceProvider";
+export interface Disposable {
+  dispose(): void;
+}

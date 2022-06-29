@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@kie-tools-core/envelope-bus": "0.0.0",
+    "@rhoas/registry-instance-sdk": "^0.34.1",
     "@types/js-yaml": "^4.0.5",
     "js-yaml": "^4.1.0",
     "openapi-types": "^7.0.1",

@@ -1853,6 +1853,7 @@ importers:
       "@kie-tools-core/envelope-bus": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      "@rhoas/registry-instance-sdk": ^0.34.1
       "@types/js-yaml": ^4.0.5
       "@types/lodash": ^4.14.168
       js-yaml: ^4.1.0
@@ -1860,6 +1861,7 @@ importers:
       openapi-types: ^7.0.1
     dependencies:
       "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@rhoas/registry-instance-sdk": 0.34.1
       "@types/js-yaml": 4.0.5
       js-yaml: 4.1.0
       lodash: 4.17.21

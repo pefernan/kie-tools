@@ -15,10 +15,10 @@
  */
 
 import * as vscode from "vscode";
-import { AuthProvider } from "./AuthProvider";
 import { RHCCAuthProvider } from "./RHCCAuthProvider";
 import { AuthProviderType } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { NoOpAuthProvider } from "./NoOpAuthProvider";
+import { NoOpAuthProvider } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/auth/NoOpAuthProvider";
+import { AuthProvider } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/auth/AuthProvider";
 
 export const lookupAuthProvider = (args: {
   context: vscode.ExtensionContext;

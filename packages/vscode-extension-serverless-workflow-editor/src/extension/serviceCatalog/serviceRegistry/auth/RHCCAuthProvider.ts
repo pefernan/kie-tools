@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { AuthProvider } from "./AuthProvider";
 import * as vscode from "vscode";
+import { AuthProvider } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/auth/AuthProvider";
 
 const RH_MAS_ACCOUNT = "redhat-mas-account-auth";
 const SCOPE = "openid";

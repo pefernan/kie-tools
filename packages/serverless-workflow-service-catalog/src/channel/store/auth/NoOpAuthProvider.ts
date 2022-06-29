@@ -14,5 +14,27 @@
  * limitations under the License.
  */
 
-export * from "./VsCodeFsSwfServiceCatalogSource";
-export * from "./VsCodeFsSwfServiceCatalogSourceProvider";
+import { AuthProvider } from "./AuthProvider";
+import { Disposable } from "../types";
+
+export class NoOpAuthProvider implements AuthProvider {
+  public getAuthHeader(): Promise<any> {
+    return Promise.resolve({});
+  }
+
+  public login(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  public shouldLogin(): boolean {
+    return false;
+  }
+
+  public subscribeToSessionChange(substrciption: () => void): Disposable {
+    return {
+      dispose: () => {},
+    };
+  }
+
+  public dispose(): void {}
+}

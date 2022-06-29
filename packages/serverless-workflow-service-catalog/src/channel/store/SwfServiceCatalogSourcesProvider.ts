@@ -14,5 +14,10 @@
  * limitations under the License.
  */
 
-export * from "./VsCodeFsSwfServiceCatalogSource";
-export * from "./VsCodeFsSwfServiceCatalogSourceProvider";
+import { Disposable } from "./types";
+import { SwfServiceCatalogSource } from "./SwfServiceCatalogSource";
+
+export interface SwfServiceCatalogSourcesProvider {
+  getCatalogSources(): SwfServiceCatalogSource[];
+  subscribeToCatalogSourceChange(subscription: (sources: SwfServiceCatalogSource[]) => void): Disposable;
+}

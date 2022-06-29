@@ -17,15 +17,15 @@
 import { TextDocument } from "vscode-languageserver-textdocument";
 import * as vscode from "vscode";
 import { SwfVsCodeExtensionConfiguration } from "../configuration";
-import { SwfServiceCatalogStore } from "../serviceCatalog/SwfServiceCatalogStore";
 import { posix as posixPath } from "path";
 import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { FsWatchingServiceCatalogRelativeStore } from "../serviceCatalog/fs";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "../serviceCatalog/serviceRegistry";
+import { SwfServiceCatalogStore } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/store";
+import { VsCodeFsSwfServiceCatalogSourceProvider } from "../serviceCatalog/fs";
 
 export class VsCodeSwfLanguageService {
   public readonly ls: SwfJsonLanguageService;
-  private readonly fsWatchingSwfServiceCatalogStore: Map<string, FsWatchingServiceCatalogRelativeStore> = new Map();
+  private readonly fsWatchingSwfServiceCatalogStore: Map<string, SwfServiceCatalogStore> = new Map();
   constructor(
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
@@ -37,7 +37,7 @@ export class VsCodeSwfLanguageService {
       serviceCatalog: {
         global: {
           getServices: async () => {
-            return args.swfServiceCatalogGlobalStore.storedServices;
+            return args.swfServiceCatalogGlobalStore.getSwfCatalogServices();
           },
         },
         relative: {
@@ -45,17 +45,19 @@ export class VsCodeSwfLanguageService {
             const specsDirAbsolutePosixPath = this.getSpecsDirPosixPaths(textDocument).specsDirAbsolutePosixPath;
             let swfServiceCatalogRelativeStore = this.fsWatchingSwfServiceCatalogStore.get(specsDirAbsolutePosixPath);
             if (swfServiceCatalogRelativeStore) {
-              return swfServiceCatalogRelativeStore.getServices();
+              return swfServiceCatalogRelativeStore.getSwfCatalogServices();
             }
 
-            swfServiceCatalogRelativeStore = new FsWatchingServiceCatalogRelativeStore({
-              baseFileAbsolutePosixPath: vscode.Uri.parse(textDocument.uri).path,
-              configuration: this.args.configuration,
+            swfServiceCatalogRelativeStore = new SwfServiceCatalogStore({
+              sourceProvider: new VsCodeFsSwfServiceCatalogSourceProvider({
+                baseFileAbsolutePosixPath: vscode.Uri.parse(textDocument.uri).path,
+                configuration: this.args.configuration,
+              }),
             });
 
             await swfServiceCatalogRelativeStore.init();
             this.fsWatchingSwfServiceCatalogStore.set(specsDirAbsolutePosixPath, swfServiceCatalogRelativeStore);
-            return swfServiceCatalogRelativeStore.getServices();
+            return swfServiceCatalogRelativeStore.getSwfCatalogServices();
           },
         },
         getServiceFileNameFromSwfServiceCatalogServiceId: async (registryName, swfServiceCatalogServiceId) => {
@@ -75,9 +77,10 @@ export class VsCodeSwfLanguageService {
           return this.getSpecsDirPosixPaths(textDocument);
         },
         shouldConfigureServiceRegistries: () => {
-          return !this.args.swfServiceCatalogGlobalStore.isServiceRegistryConfigured;
+          return !this.args.swfServiceCatalogGlobalStore.isConfigured;
         },
         shouldServiceRegistriesLogIn: () => {
+          this.args.swfServiceCatalogGlobalStore.authProviders.find();
           return this.args.swfServiceCatalogGlobalStore.shouldLoginServices;
         },
         canRefreshServices: () => {
