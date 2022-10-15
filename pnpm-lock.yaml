@@ -2758,6 +2758,7 @@ importers:
       "@kie-tools/root-env": workspace:*
       "@kie-tools/serverless-workflow-combined-editor": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-assets": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
       "@kie-tools/stunner-editors": workspace:*
       "@kie-tools/tsconfig": workspace:*
@@ -2812,6 +2813,7 @@ importers:
       "@kie-tools/root-env": link:../root-env
       "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
       "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets": link:../serverless-workflow-diagram-editor-assets
       "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@kie-tools/tsconfig": link:../tsconfig

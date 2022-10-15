@@ -55,6 +55,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",

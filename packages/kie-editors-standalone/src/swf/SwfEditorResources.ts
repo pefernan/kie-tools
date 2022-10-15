@@ -16,9 +16,8 @@
 
 import * as fs from "fs";
 import { BaseEditorResources, EditorResources } from "../common/EditorResources";
-import * as stunnerEditors from "@kie-tools/stunner-editors";
 import { getServerlessWorkflowLanguageData } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
-import * as ServerlessWorkflowDiagramEditor from "@kie-tools/serverless-workflow-diagram-editor";
+import * as swfEditor from "@kie-tools/serverless-workflow-diagram-editor-assets";
 
 export class ServerlessworkflowEditorResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {
@@ -126,7 +125,7 @@ export class ServerlessworkflowEditorResources extends BaseEditorResources {
   }
 
   public getEditorResourcesPath() {
-    return ServerlessWorkflowDiagramEditor.swEditorPath();
+    return swfEditor.swEditorPath();
   }
 
   public getTemplatePath() {
