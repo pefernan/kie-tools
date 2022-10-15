@@ -94,7 +94,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
 
   const [isTextEditorReady, setTextEditorReady] = useState(false);
   const [isDiagramEditorReady, setDiagramEditorReady] = useState(false);
-
+  console.log("check props", props);
   const isVscode = useMemo(
     () => props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB,
     [props.channelType]
@@ -152,6 +152,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     () => {
       return {
         setContent: async (path: string, content: string) => {
+          console.log("path", path);
           try {
             const match = /\.sw\.(json|yml|yaml)$/.exec(path.toLowerCase());
             const dotExtension = match ? match[0] : extname(path);
@@ -168,7 +169,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
               fileExtension: extension,
               fileName: fileName,
             });
-
+            console.log("props set method", path, getFileContentsFn, extension, fileName);
             setEmbeddedDiagramEditorFile({
               path: path,
               getFileContents: getFileContentsFn,
