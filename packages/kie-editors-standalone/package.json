@@ -18,9 +18,9 @@
     "dist/dmn"
   ],
   "scripts": {
-    "build:dev": "rimraf dist && webpack --env dev --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
+    "build:dev": "rimraf dist && webpack --env dev --config webpack.swf-resources.config.js && webpack --env dev --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
     "build:preprocessor": "node dist/preprocessor/preprocessor.js",
-    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --config webpack.package-resources.config.js && pnpm test:it",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack --env dev --config webpack.swf-resources.config.js && webpack --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --config webpack.package-resources.config.js && pnpm test:it",
     "build:productization": "pnpm build:prod",
     "cy:open": "run-script-os",
     "cy:open:darwin:linux": "cypress open --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
@@ -57,6 +57,10 @@
     "@kie-tools/serverless-workflow-diagram-editor": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
+    "@kie-tools/serverless-workflow-mermaid-editor-assets": "workspace:*",
+    "@kie-tools/serverless-workflow-mermaid-viewer": "workspace:*",
+    "@kie-tools/serverless-workflow-service-catalog": "workspace:*",
+    "@kie-tools/serverless-workflow-text-editor": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/jest": "^26.0.23",

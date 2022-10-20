@@ -2756,6 +2756,10 @@ importers:
       "@kie-tools/serverless-workflow-diagram-editor": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-assets": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
+      "@kie-tools/serverless-workflow-mermaid-editor-assets": workspace:*
+      "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
+      "@kie-tools/serverless-workflow-service-catalog": workspace:*
+      "@kie-tools/serverless-workflow-text-editor": workspace:*
       "@kie-tools/stunner-editors": workspace:*
       "@kie-tools/tsconfig": workspace:*
       "@types/jest": ^26.0.23
@@ -2811,6 +2815,10 @@ importers:
       "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
       "@kie-tools/serverless-workflow-diagram-editor-assets": link:../serverless-workflow-diagram-editor-assets
       "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-mermaid-editor-assets": link:../serverless-workflow-mermaid-editor-assets
+      "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
+      "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/jest": 26.0.23
@@ -3979,6 +3987,16 @@ importers:
       rimraf: 3.0.2
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
+
+  packages/serverless-workflow-mermaid-editor-assets:
+    specifiers:
+      "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
+      cpr: ^3.0.1
+      rimraf: ^3.0.2
+    devDependencies:
+      "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
+      cpr: 3.0.1
+      rimraf: 3.0.2
 
   packages/serverless-workflow-mermaid-viewer:
     specifiers:

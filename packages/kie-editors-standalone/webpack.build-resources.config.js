@@ -38,7 +38,7 @@ module.exports = (env) => [
     entry: {
       "envelope/bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
       "envelope/dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
-      "envelope/swf-envelope": "./src/envelope/SwfEditorEnvelopeApp.ts",
+      "envelope/swf-combined-editor-envelope": "./src/envelope/SwfCombinedEditorEnvelopeApp.ts",
     },
     module: {
       rules: [...patternflyBase.webpackModuleRules],

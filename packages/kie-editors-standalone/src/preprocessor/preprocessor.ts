@@ -19,13 +19,19 @@ import * as fs from "fs";
 import { DmnEditorResources } from "../dmn/DmnEditorResources";
 import { BpmnEditorResources } from "../bpmn/BpmnEditorResources";
 import { BaseEditorResources } from "../common/EditorResources";
-import { ServerlessworkflowEditorResources } from "../swf/SwfEditorResources";
+import { ServerlessworkflowDiagramEditorResources } from "../swf/resources/SwfDiagramEditorResources";
+import { ServerlessworkflowMermaidViewerResources } from "../swf/resources/SwfMermaidViewerResources";
+import { ServerlessworkflowTextEditorResources } from "../swf/resources/SwfTextEditorResources";
+import { ServerlessworkflowCombinedEditorResources } from "../swf/resources/SwfCombinedEditorResources";
 
 function main() {
   const editorsResources: BaseEditorResources[] = [
     new DmnEditorResources(),
     new BpmnEditorResources(),
-    new ServerlessworkflowEditorResources(),
+    new ServerlessworkflowCombinedEditorResources(),
+    new ServerlessworkflowDiagramEditorResources(),
+    new ServerlessworkflowMermaidViewerResources(),
+    new ServerlessworkflowTextEditorResources(),
   ];
 
   editorsResources.forEach((editorResources) => {

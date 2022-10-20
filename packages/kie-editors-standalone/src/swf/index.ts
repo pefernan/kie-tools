@@ -14,14 +14,28 @@
  * limitations under the License.
  */
 
-import swfEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/swfEnvelopeIndex.html";
+import swfCombinedEditorEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/swfCombinedEditorEnvelopeIndex.html";
+import swfDiagramEditorEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/swfDiagramEditorEnvelopeIndex.html";
+import swfMermaidViewerEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/swfMermaidViewerEnvelopeIndex.html";
+import swfTextEditorEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/swfTextEditorEnvelopeIndex.html";
 import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEditorsEditorChannelApiImpl";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import {
+  SwfCombinedEditorChannelApiImpl,
+  SwfFeatureToggleChannelApiImpl,
+  SwfServiceCatalogChannelApiImpl,
+  SwfLanguageServiceChannelApiImpl,
+  SwfPreviewOptionsChannelApiImpl,
+  SwfStaticEnvelopeContentProviderChannelApiImpl,
+} from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
+import { ServerlessWorkflowCombinedEditorChannelApi } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 declare global {
   interface Window {
@@ -32,7 +46,7 @@ declare global {
 const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, origin?: string) => {
   const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
 
-  return new EnvelopeServer<KogitoEditorChannelApi, ServerlessWorkflowDiagramEditorEnvelopeApi>(
+  return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
     { postMessage: (message) => iframe.contentWindow?.postMessage(message, "*") },
     origin ?? defaultOrigin,
     (self) => {
@@ -46,7 +60,7 @@ const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, ori
           fileExtension: "sw.json",
           initialLocale: "en-US",
           isReadOnly: readOnly ?? true,
-          channel: ChannelType.EMBEDDED,
+          channel: ChannelType.STANDALONE,
         }
       );
     }
@@ -61,50 +75,64 @@ export const open = (args: {
   onError?: () => any;
   resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
 }): StandaloneEditorApi => {
-  console.log(1, args);
   const iframe = document.createElement("iframe");
-  iframe.srcdoc = swfEnvelopeIndex;
+  iframe.srcdoc = swfCombinedEditorEnvelopeIndex;
   iframe.style.width = "100%";
   iframe.style.height = "100%";
   iframe.style.border = "none";
-  console.log(2);
+
   const envelopeServer = createEnvelopeServer(iframe, args.readOnly, args.origin);
 
   const stateControl = new StateControl();
 
   let receivedSetContentError = false;
-  console.log(3);
-  const channelApiImpl = new StandaloneEditorsEditorChannelApiImpl(
-    stateControl,
-    {
-      fileName: "",
-      fileExtension: "sw.json",
-      getFileContents: () => Promise.resolve(args.initialContent),
-      isReadOnly: args.readOnly ?? false,
-    },
-    "en-US",
-    {
-      kogitoEditor_setContentError() {
-        if (!receivedSetContentError) {
-          args.onError?.();
-          receivedSetContentError = true;
-        }
+
+  const channelApiImpl = new SwfCombinedEditorChannelApiImpl(
+    new StandaloneEditorsEditorChannelApiImpl(
+      stateControl, // might try EmbeddedEditorChannelApiImpl here :S
+      {
+        fileName: "test.sw.json", // TODO: make this a bit smarter :S
+        fileExtension: "sw.json",
+        getFileContents: () => Promise.resolve(args.initialContent),
+        isReadOnly: args.readOnly ?? false,
       },
-    },
-    args.resources
+      "en-US",
+      {
+        kogitoEditor_setContentError() {
+          if (!receivedSetContentError) {
+            args.onError?.();
+            receivedSetContentError = true;
+          }
+        },
+      },
+      args.resources
+    ),
+    new SwfFeatureToggleChannelApiImpl({ stunnerEnabled: true }),
+    new SwfServiceCatalogChannelApiImpl(
+      envelopeServer.envelopeApi as unknown as MessageBusClientApi<SwfServiceCatalogChannelApi>,
+      [],
+      { registries: [] }
+    ),
+    new SwfLanguageServiceChannelApiImpl(
+      envelopeServer.envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>
+    ),
+    new SwfPreviewOptionsChannelApiImpl(undefined),
+    new SwfStaticEnvelopeContentProviderChannelApiImpl({
+      diagramEditorEnvelopeContent: swfDiagramEditorEnvelopeIndex, // TODO: modify this pagse to do the right
+      mermaidEnvelopeContent: swfMermaidViewerEnvelopeIndex,
+      textEditorEnvelopeContent: swfTextEditorEnvelopeIndex,
+    })
   );
 
   const listener = (message: MessageEvent) => {
     envelopeServer.receive(message.data, channelApiImpl);
   };
   window.addEventListener("message", listener);
-  console.log(4);
 
   args.container.appendChild(iframe);
   envelopeServer.startInitPolling(channelApiImpl);
 
   const editor = createEditor(envelopeServer.envelopeApi, stateControl, listener, iframe);
-  console.log(5, editor);
   return {
     ...editor,
   };

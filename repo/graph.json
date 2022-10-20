@@ -29,6 +29,7 @@
       { "id": "@kie-tools-examples/webapp" },
       { "id": "@kie-tools/kie-editors-standalone" },
       { "id": "@kie-tools/serverless-workflow-combined-editor" },
+      { "id": "@kie-tools/serverless-workflow-mermaid-editor-assets" },
       { "id": "@kie-tools/stunner-editors" },
       { "id": "@kie-tools-core/notifications" },
       { "id": "@kie-tools-core/i18n" },
@@ -212,6 +213,11 @@
         "target": "@kie-tools/serverless-workflow-combined-editor",
         "weight": 1
       },
+      {
+        "source": "@kie-tools/kie-editors-standalone",
+        "target": "@kie-tools/serverless-workflow-mermaid-editor-assets",
+        "weight": 1
+      },
       { "source": "@kie-tools/kie-editors-standalone", "target": "@kie-tools/stunner-editors", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-combined-editor",
@@ -231,6 +237,11 @@
       {
         "source": "@kie-tools/serverless-workflow-combined-editor",
         "target": "@kie-tools/serverless-workflow-text-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/serverless-workflow-mermaid-editor-assets",
+        "target": "@kie-tools/serverless-workflow-mermaid-viewer",
         "weight": 1
       },
       { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/stunner-editors-dmn-loader", "weight": 1 },
@@ -776,6 +787,7 @@
     ["@kie-tools/serverless-workflow-diagram-editor-assets", "packages/serverless-workflow-diagram-editor-assets"],
     ["@kie-tools/serverless-workflow-diagram-editor-envelope", "packages/serverless-workflow-diagram-editor-envelope"],
     ["@kie-tools/serverless-workflow-language-service", "packages/serverless-workflow-language-service"],
+    ["@kie-tools/serverless-workflow-mermaid-editor-assets", "packages/serverless-workflow-mermaid-editor-assets"],
     ["@kie-tools/serverless-workflow-mermaid-viewer", "packages/serverless-workflow-mermaid-viewer"],
     ["@kie-tools/serverless-workflow-service-catalog", "packages/serverless-workflow-service-catalog"],
     ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],

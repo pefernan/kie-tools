@@ -44,6 +44,7 @@ import {
   SwfPreviewOptions,
   SwfPreviewOptionsChannelApi,
 } from "../api";
+import { SwfStaticEnvelopeContentProviderChannelApi } from "../api/SwfStaticEnvelopeContentProviderChannelApi";
 
 export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombinedEditorChannelApi {
   constructor(
@@ -51,7 +52,8 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     private readonly swfFeatureToggleApiImpl?: SwfFeatureToggleChannelApi,
     private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
     private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi,
-    private readonly swfPreviewOptionsChannelApiImpl?: SwfPreviewOptionsChannelApi
+    private readonly swfPreviewOptionsChannelApiImpl?: SwfPreviewOptionsChannelApi,
+    private readonly swfStaticEnvelopeContentProviderChannelApi?: SwfStaticEnvelopeContentProviderChannelApi
   ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
@@ -171,6 +173,26 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
       this.swfPreviewOptionsChannelApiImpl?.kogitoSwfPreviewOptions_get() ?? {
         defaultValue: { diagramDefaultWidth: "50%" },
       }
+    );
+  }
+
+  public kogitoSwfGetDiagramEditorEnvelopeContent(): Promise<string> {
+    return (
+      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetDiagramEditorEnvelopeContent() ??
+      Promise.reject("no op")
+    );
+  }
+
+  public kogitoSwfGetMermaidEnvelopeContent(): Promise<string> {
+    return (
+      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetMermaidEnvelopeContent() ?? Promise.reject("no op")
+    );
+  }
+
+  public kogitoSwfGetTextEditorEnvelopeContent(): Promise<string> {
+    return (
+      this.swfStaticEnvelopeContentProviderChannelApi?.kogitoSwfGetTextEditorEnvelopeContent() ??
+      Promise.reject("no op")
     );
   }
 }
