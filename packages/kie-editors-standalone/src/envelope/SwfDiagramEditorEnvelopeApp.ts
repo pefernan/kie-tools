@@ -37,7 +37,7 @@ const initEnvelope = () => {
       create: (args) =>
         new ServerlessWorkflowDiagramEditorEnvelopeApiImpl(
           args,
-          new ServerlessWorkflowDiagramEditorFactory({ shouldLoadResourcesDynamically: true })
+          new ServerlessWorkflowDiagramEditorFactory({ shouldLoadResourcesDynamically: false })
         ),
     },
   });
