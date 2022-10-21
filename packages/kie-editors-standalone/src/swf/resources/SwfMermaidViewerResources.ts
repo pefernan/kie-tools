@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-import * as fs from "fs";
-import { BaseEditorResources, EditorResources, FontResource, ReferencedResource } from "../../common/EditorResources";
-import * as swfMermaidEditorAssets from "@kie-tools/serverless-workflow-mermaid-editor-assets";
+import { BaseEditorResources } from "../../common/EditorResources";
 
 export class ServerlessworkflowMermaidViewerResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {

@@ -15,8 +15,7 @@
  */
 
 import * as fs from "fs";
-import { BaseEditorResources, EditorResources } from "../../common/EditorResources";
-import * as stunnerEditors from "@kie-tools/stunner-editors";
+import { BaseEditorResources } from "../../common/EditorResources";
 import { getServerlessWorkflowLanguageData } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import * as swfEditorAssets from "@kie-tools/serverless-workflow-diagram-editor-assets";
 
@@ -45,14 +44,12 @@ export class ServerlessworkflowDiagramEditorResources extends BaseEditorResource
     };
 
     return swfEditorResources;
-    // return {}
   }
 
   public getReferencedJSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
     const editorDir = fs.readdirSync(`${resourcesPathPrefix}/${gwtModuleName}`);
     const gwtJsFiles = editorDir.filter((file) => file.indexOf(".cache.js") >= 0);
     return gwtJsFiles.map((file) => ({ path: `${resourcesPathPrefix}/${gwtModuleName}/${file?.split("/").pop()}` }));
-    return [];
   }
 
   public getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
@@ -66,8 +63,6 @@ export class ServerlessworkflowDiagramEditorResources extends BaseEditorResource
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/animate-3.5.2.min.cache.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-notify-custom.min.cache.css` },
       { path: `${resourcesPathPrefix}/${gwtModuleName}/css/card-1.0.1.cache.css` },
-      // { path: `${resourcesPathPrefix}/${gwtModuleName}/css/bootstrap-slider-9.2.0.min.cache.css` }
-      // { path: `${resourcesPathPrefix}/${gwtModuleName}/css/typeahead-0.10.5.min.cache.css` },
     ];
   }
 

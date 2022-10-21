@@ -24,7 +24,6 @@ import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { ChannelType, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEditorsEditorChannelApiImpl";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
-import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import {
   SwfCombinedEditorChannelApiImpl,
   SwfFeatureToggleChannelApiImpl,
@@ -118,7 +117,7 @@ export const open = (args: {
     ),
     new SwfPreviewOptionsChannelApiImpl(undefined),
     new SwfStaticEnvelopeContentProviderChannelApiImpl({
-      diagramEditorEnvelopeContent: swfDiagramEditorEnvelopeIndex, // TODO: modify this pagse to do the right
+      diagramEditorEnvelopeContent: swfDiagramEditorEnvelopeIndex,
       mermaidEnvelopeContent: swfMermaidViewerEnvelopeIndex,
       textEditorEnvelopeContent: swfTextEditorEnvelopeIndex,
     })

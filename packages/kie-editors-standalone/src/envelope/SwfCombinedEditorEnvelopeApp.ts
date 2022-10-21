@@ -19,14 +19,12 @@ import { NoOpKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts
 import { ServerlessWorkflowCombinedEditorFactory } from "@kie-tools/serverless-workflow-combined-editor";
 
 const initEnvelope = () => {
-  console.log("combined editor envelope called -start");
   init({
     container: document.getElementById("combined-envelope-app")!,
     bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
     editorFactory: new ServerlessWorkflowCombinedEditorFactory(),
     keyboardShortcutsService: new NoOpKeyboardShortcutsService(),
   });
-  console.log("combined editor envelope called -end");
 };
 
 // Envelope should be initialized only after page was loaded.
