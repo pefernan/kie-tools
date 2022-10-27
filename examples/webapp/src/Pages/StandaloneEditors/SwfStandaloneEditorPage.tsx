@@ -15,9 +15,14 @@
  */
 
 import * as React from "react";
-import { useEffect, useRef } from "react";
-import { Page } from "@patternfly/react-core";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { Page, PageSection } from "@patternfly/react-core";
 import * as SwfEditor from "@kie-tools/kie-editors-standalone/dist/swf";
+import { ServerlessWorkflowEmptyState } from "./SwfEditorEmptyState";
+import { StandaloneEditorApi } from "@kie-tools/kie-editors-standalone/dist/common/Editor";
+import { extname } from "path";
+
+export type ServerlessWorkflowType = "json" | "yml" | "yaml";
 
 export function SwfStandaloneEditorPage() {
   const swfEditorContainer = useRef<HTMLDivElement>(null);
@@ -26,42 +31,69 @@ export function SwfStandaloneEditorPage() {
   const redo = useRef<HTMLButtonElement>(null);
   const download = useRef<HTMLButtonElement>(null);
   const downloadSvg = useRef<HTMLButtonElement>(null);
+  const [editor, setEditor] = useState<StandaloneEditorApi>();
 
-  useEffect(() => {
-    console.log("Test", swfEditorContainer.current);
-    const editor = SwfEditor.open({
+  const onSetContent = useCallback((path: string, content: string) => {
+    const match = /\.sw\.(json|yml|yaml)$/.exec(path.toLowerCase());
+    const dotExtension = match ? match[0] : extname(path);
+    const extension = dotExtension.slice(1);
+
+    const editorContent = SwfEditor.open({
+      container: swfEditorContainer.current!,
+      initialContent: Promise.resolve(content),
+      readOnly: false,
+      languageType: extension as any,
+    });
+
+    setEditor(editorContent);
+  }, []);
+
+  const onNewContent = (serverlessWorkflowType: ServerlessWorkflowType) => {
+    const editorContent = SwfEditor.open({
       container: swfEditorContainer.current!,
       initialContent: Promise.resolve(""),
       readOnly: false,
+      languageType: serverlessWorkflowType,
     });
 
-    undo.current?.addEventListener("click", () => {
-      editor.undo();
-    });
+    setEditor(editorContent);
+  };
 
-    redo.current?.addEventListener("click", () => {
-      editor.redo();
-    });
+  undo.current?.addEventListener("click", () => {
+    editor?.undo();
+  });
 
-    editor.subscribeToContentChanges((isDirty) => {
-      if (isDirty) {
-        unsavedChanges.current!.style.display = "";
-      } else {
-        unsavedChanges.current!.style.display = "none";
-      }
-    });
-  }, []);
+  redo.current?.addEventListener("click", () => {
+    editor?.redo();
+  });
+
+  editor?.subscribeToContentChanges((isDirty) => {
+    if (isDirty) {
+      unsavedChanges.current!.style.display = "";
+    } else {
+      unsavedChanges.current!.style.display = "none";
+    }
+  });
 
   return (
     <Page>
-      <div style={{ height: "40px", padding: "5px" }}>
-        <button ref={undo}>Undo</button>
-        <button ref={redo}>Redo</button>
-        <span ref={unsavedChanges} style={{ display: "none" }}>
-          File contains unsaved changes.
-        </span>
-      </div>
-      <div ref={swfEditorContainer} style={{ height: "calc(100% - 50px)" }} />
+      {!editor && (
+        <PageSection isFilled={true}>
+          <ServerlessWorkflowEmptyState newContent={onNewContent} setContent={onSetContent} />
+        </PageSection>
+      )}
+      <PageSection padding={{ default: "noPadding" }}>
+        {editor && (
+          <div style={{ height: "40px", padding: "5px" }}>
+            <button ref={undo}>Undo</button>
+            <button ref={redo}>Redo</button>
+            <span ref={unsavedChanges} style={{ display: "none" }}>
+              File contains unsaved changes.
+            </span>
+          </div>
+        )}
+        <div ref={swfEditorContainer} style={{ height: "calc(100% - 50px)" }} />
+      </PageSection>
     </Page>
   );
 }

@@ -331,6 +331,7 @@ importers:
       "@kie-tools/stunner-editors": workspace:*
       "@kie-tools/tsconfig": workspace:*
       "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/react-router": ^5.1.14
@@ -359,6 +360,7 @@ importers:
       "@kie-tools/kie-bc-editors": link:../../packages/kie-bc-editors
       "@kie-tools/kie-editors-standalone": link:../../packages/kie-editors-standalone
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       monaco-editor: 0.33.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -13721,7 +13723,7 @@ packages:
       p-limit: 3.1.0
       schema-utils: 3.1.1
       serialize-javascript: 5.0.1
-      webpack: 5.70.0
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -23394,7 +23396,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /rc/1.2.8:

@@ -27,6 +27,7 @@ export interface StandaloneEditorApi extends EditorApi {
   close: () => void;
 }
 
+export type ServerlessWorkflowType = "json" | "yml" | "yaml";
 export interface Editor {
   open: (args: {
     container: Element;
@@ -34,6 +35,7 @@ export interface Editor {
     readOnly: boolean;
     origin?: string;
     resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
+    languageType?: ServerlessWorkflowType;
   }) => StandaloneEditorApi;
 }
 

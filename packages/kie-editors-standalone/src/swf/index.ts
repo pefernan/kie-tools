@@ -18,7 +18,7 @@ import swfCombinedEditorEnvelopeIndex from "!!raw-loader!../../dist/resources/sw
 import swfDiagramEditorEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/swfDiagramEditorEnvelopeIndex.html";
 import swfMermaidViewerEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/swfMermaidViewerEnvelopeIndex.html";
 import swfTextEditorEnvelopeIndex from "!!raw-loader!../../dist/resources/swf/swfTextEditorEnvelopeIndex.html";
-import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
+import { createEditor, Editor, StandaloneEditorApi, ServerlessWorkflowType } from "../common/Editor";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { ChannelType, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
@@ -73,6 +73,7 @@ export const open = (args: {
   origin?: string;
   onError?: () => any;
   resources?: Map<string, { contentType: ContentType; content: Promise<string> }>;
+  languageType?: ServerlessWorkflowType;
 }): StandaloneEditorApi => {
   const iframe = document.createElement("iframe");
   iframe.srcdoc = swfCombinedEditorEnvelopeIndex;
@@ -90,8 +91,8 @@ export const open = (args: {
     new StandaloneEditorsEditorChannelApiImpl(
       stateControl, // might try EmbeddedEditorChannelApiImpl here :S
       {
-        fileName: "test.sw.json", // TODO: make this a bit smarter :S
-        fileExtension: "sw.json",
+        fileName: `new-document.sw.${args.languageType}`, // TODO: make this a bit smarter :S
+        fileExtension: `sw.${args.languageType}`,
         getFileContents: () => Promise.resolve(args.initialContent),
         isReadOnly: args.readOnly ?? false,
       },
