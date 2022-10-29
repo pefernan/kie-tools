@@ -17,6 +17,7 @@
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
+const FileManagerPlugin = require("filemanager-webpack-plugin");
 
 module.exports = (env) => [
   merge(common(env), {
@@ -31,5 +32,16 @@ module.exports = (env) => [
     module: {
       rules: [...patternflyBase.webpackModuleRules],
     },
+    plugins: [
+      new FileManagerPlugin({
+        events: {
+          onEnd: {
+            mkdir: ["./dist/resources/swf/js/"],
+            copy: [{ source: "./dist/*monaco-editor*.js", destination: "./dist/resources/swf/js/" }],
+            delete: ["./dist/*monaco-editor*.js"],
+          },
+        },
+      }),
+    ],
   }),
 ];
