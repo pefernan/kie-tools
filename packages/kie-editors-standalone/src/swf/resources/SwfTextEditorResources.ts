@@ -14,18 +14,29 @@
  * limitations under the License.
  */
 
-import { BaseEditorResources } from "../../common/EditorResources";
+import * as fs from "fs";
+import { BaseEditorResources, EditorResources } from "../../common/EditorResources";
 
 export class ServerlessworkflowTextEditorResources extends BaseEditorResources {
+  private readonly JS_RESOURCES_EXPR = "jso|yaml";
   public get(args: { resourcesPathPrefix: string }) {
-    const swfTextEditorResources: any = {
+    const swfTextEditorResources: EditorResources = {
+      baseCssResources: [],
+      baseJsResources: [],
+      fontResources: [],
+      referencedCssResources: [],
+      referencedJsResources: this.getReferencedJSPaths(args.resourcesPathPrefix),
       envelopeJsResource: this.createResource({ path: `dist/envelope/swf-text-editor-envelope.js` }),
     };
     return swfTextEditorResources;
   }
 
-  public getReferencedJSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
-    return [];
+  public getReferencedJSPaths(resourcesPathPrefix: string) {
+    return fs
+      .readdirSync(resourcesPathPrefix)
+      .filter((file) => file.match(this.JS_RESOURCES_EXPR))
+      .map((file) => ({ path: `${resourcesPathPrefix}/${file?.split("/").pop()}` }))
+      .map((ref) => this.createResource(ref));
   }
 
   public getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
@@ -35,8 +46,9 @@ export class ServerlessworkflowTextEditorResources extends BaseEditorResources {
   public getFontResources(resourcesPathPrefix: string, gwtModuleName: string) {
     return [];
   }
+
   public getEditorResourcesPath() {
-    return "";
+    return "dist/resources/swf/js";
   }
 
   public getTemplatePath() {

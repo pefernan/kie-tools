@@ -19,22 +19,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
-    <script>
-        <!-- This function is called by GwtEditorWrapperFactory when the Editor envelope is ready -->
-        window.startStandaloneEditor = () => {
-            <%
-              _.map(editorResources.baseJsResources, function(jsResource) {
-                print('\nsetTimeout(() => { const jsResource = document.createElement("script"); jsResource.appendChild(document.createTextNode(`' + jsResource.content + '`)); document.head.append(jsResource); }, 0);');
-              });
-            %>
+    <%
+      _.map(editorResources.baseJsResources, function(jsResource) {
+        print('\n<script data-src="'+ jsResource.path +'">\n' + jsResource.content + '\n</script>\n');
+      });
+    %>
 
-            <%
-              _.map(editorResources.referencedJsResources, function(jsResource) {
-                print('\nsetTimeout(() => { const jsResource = document.createElement("script"); jsResource.appendChild(document.createTextNode(`' + jsResource.content + '`)); document.head.append(jsResource); }, 0);');
-              });
-            %>
-        };
-    </script>
+    <%
+      _.map(editorResources.referencedJsResources, function(jsResource) {
+          print('\n<script data-src="'+ jsResource.path +'">\n' + jsResource.content + '\n</script>\n');
+      });
+    %>
 
     <%
       print('\n<script data-src="'+ editorResources.envelopeJsResource.path +'">\n' + editorResources.envelopeJsResource.content + '\n</script>\n');
