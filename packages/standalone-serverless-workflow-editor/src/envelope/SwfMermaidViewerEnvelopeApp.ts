@@ -14,32 +14,16 @@
  * limitations under the License.
  */
 
-import { initCustom } from "@kie-tools-core/editor/dist/envelope";
-import {
-  ServerlessWorkflowDiagramEditorChannelApi,
-  ServerlessWorkflowDiagramEditorEnvelopeApi,
-} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
-import {
-  ServerlessWorkflowDiagramEditor,
-  ServerlessWorkflowDiagramEditorEnvelopeApiImpl,
-  ServerlessWorkflowDiagramEditorFactory,
-} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope";
+import { init } from "@kie-tools-core/editor/dist/envelope";
+import { NoOpKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
+import { ServerlessWorkflowMermaidViewerFactory } from "@kie-tools/serverless-workflow-mermaid-viewer/dist/viewer";
 
 const initEnvelope = () => {
-  initCustom<
-    ServerlessWorkflowDiagramEditor,
-    ServerlessWorkflowDiagramEditorEnvelopeApi,
-    ServerlessWorkflowDiagramEditorChannelApi
-  >({
-    container: document.getElementById("diagram-envelope-app")!,
+  init({
+    container: document.getElementById("mermaid-envelope-app")!,
     bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
-    apiImplFactory: {
-      create: (args) =>
-        new ServerlessWorkflowDiagramEditorEnvelopeApiImpl(
-          args,
-          new ServerlessWorkflowDiagramEditorFactory({ shouldLoadResourcesDynamically: false })
-        ),
-    },
+    editorFactory: new ServerlessWorkflowMermaidViewerFactory(),
+    keyboardShortcutsService: new NoOpKeyboardShortcutsService(),
   });
 };
 

@@ -21,9 +21,7 @@ import * as swfEditorAssets from "@kie-tools/serverless-workflow-diagram-editor-
 
 export class ServerlessworkflowDiagramEditorResources extends BaseEditorResources {
   public get(args: { resourcesPathPrefix: string }) {
-    console.log("check", args.resourcesPathPrefix);
     const swfLanguageData = getServerlessWorkflowLanguageData(args.resourcesPathPrefix);
-    console.log("languageData", swfLanguageData);
     const swfEditorResources: any = {
       envelopeJsResource: this.createResource({ path: `dist/envelope/swf-diagram-editor-envelope.js` }),
       baseJsResources: swfLanguageData.resources

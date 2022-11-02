@@ -208,16 +208,6 @@
       { "source": "@kie-tools-examples/webapp", "target": "@kie-tools-examples/ping-pong-view-react", "weight": 1 },
       { "source": "@kie-tools-examples/webapp", "target": "@kie-tools-examples/todo-list-view", "weight": 1 },
       { "source": "@kie-tools-examples/webapp", "target": "@kie-tools/kie-editors-standalone", "weight": 1 },
-      {
-        "source": "@kie-tools/kie-editors-standalone",
-        "target": "@kie-tools/serverless-workflow-combined-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kie-editors-standalone",
-        "target": "@kie-tools/serverless-workflow-mermaid-editor-assets",
-        "weight": 1
-      },
       { "source": "@kie-tools/kie-editors-standalone", "target": "@kie-tools/stunner-editors", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-combined-editor",

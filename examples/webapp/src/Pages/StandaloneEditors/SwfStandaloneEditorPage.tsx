@@ -17,9 +17,9 @@
 import * as React from "react";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Page, PageSection } from "@patternfly/react-core";
-import * as SwfEditor from "@kie-tools/kie-editors-standalone/dist/swf";
+import * as SwfEditor from "@kie-tools/standalone-serverless-workflow-editor/dist/swf";
 import { ServerlessWorkflowEmptyState } from "./SwfEditorEmptyState";
-import { StandaloneEditorApi } from "@kie-tools/kie-serverless-workflow-editor-standalone/dist/common/Editor";
+import { StandaloneEditorApi } from "@kie-tools/standalone-serverless-workflow-editor/dist/common/Editor";
 import { extname } from "path";
 
 export type ServerlessWorkflowType = "json" | "yml" | "yaml";

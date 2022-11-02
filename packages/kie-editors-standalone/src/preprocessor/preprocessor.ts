@@ -19,20 +19,9 @@ import * as fs from "fs";
 import { DmnEditorResources } from "../dmn/DmnEditorResources";
 import { BpmnEditorResources } from "../bpmn/BpmnEditorResources";
 import { BaseEditorResources } from "../common/EditorResources";
-import { ServerlessworkflowDiagramEditorResources } from "../swf/resources/SwfDiagramEditorResources";
-import { ServerlessworkflowMermaidViewerResources } from "../swf/resources/SwfMermaidViewerResources";
-import { ServerlessworkflowTextEditorResources } from "../swf/resources/SwfTextEditorResources";
-import { ServerlessworkflowCombinedEditorResources } from "../swf/resources/SwfCombinedEditorResources";
 
 function main() {
-  const editorsResources: BaseEditorResources[] = [
-    new DmnEditorResources(),
-    new BpmnEditorResources(),
-    new ServerlessworkflowCombinedEditorResources(),
-    new ServerlessworkflowDiagramEditorResources(),
-    new ServerlessworkflowMermaidViewerResources(),
-    new ServerlessworkflowTextEditorResources(),
-  ];
+  const editorsResources: BaseEditorResources[] = [new DmnEditorResources(), new BpmnEditorResources()];
 
   editorsResources.forEach((editorResources) => {
     const template = _.template(fs.readFileSync(editorResources.getTemplatePath()).toString());
