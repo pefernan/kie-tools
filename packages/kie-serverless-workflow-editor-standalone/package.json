@@ -1,7 +1,7 @@
 {
-  "name": "@kie-tools/kie-editors-standalone",
+  "name": "@kie-tools/kie-serverless-workflow-editor-standalone",
   "version": "0.0.0",
-  "description": "",
+  "description": "Standalone editor for serverless workflow",
   "license": "Apache-2.0",
   "keywords": [],
   "homepage": "https://github.com/kiegroup/kie-tools",
@@ -13,9 +13,7 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "files": [
-    "dist/bpmn",
-    "dist/common",
-    "dist/dmn"
+    "dist/swf"
   ],
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev --config webpack.swf-resources.config.js && webpack --env dev --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
@@ -37,6 +35,10 @@
     "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\" \"pnpm postreport\""
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools-core/backend": "workspace:*",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/guided-tour": "workspace:*",
