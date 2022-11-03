@@ -25,16 +25,15 @@ import { ChannelType, KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@k
 import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEditorsEditorChannelApiImpl";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import {
-  SwfCombinedEditorChannelApiImpl,
   SwfFeatureToggleChannelApiImpl,
   SwfServiceCatalogChannelApiImpl,
-  SwfLanguageServiceChannelApiImpl,
   SwfPreviewOptionsChannelApiImpl,
   SwfStaticEnvelopeContentProviderChannelApiImpl,
 } from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
-import { ServerlessWorkflowCombinedEditorChannelApi } from "@kie-tools/serverless-workflow-combined-editor/dist/api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { StandaloneServerlessWorkflowCombinedEditorChannelApi } from "./channel";
+import { getLanguageServiceChannelApi } from "./languageService";
 
 declare global {
   interface Window {
@@ -87,7 +86,11 @@ export const open = (args: {
 
   let receivedSetContentError = false;
 
-  const channelApiImpl = new SwfCombinedEditorChannelApiImpl(
+  const languageServiceChannelApiImpl = getLanguageServiceChannelApi({
+    workflowType: args.languageType ?? "json",
+  });
+
+  const channelApiImpl = new StandaloneServerlessWorkflowCombinedEditorChannelApi(
     new StandaloneEditorsEditorChannelApiImpl(
       stateControl, // might try EmbeddedEditorChannelApiImpl here :S
       {
@@ -113,9 +116,7 @@ export const open = (args: {
       [],
       { registries: [] }
     ),
-    new SwfLanguageServiceChannelApiImpl(
-      envelopeServer.envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>
-    ),
+    languageServiceChannelApiImpl,
     new SwfPreviewOptionsChannelApiImpl(undefined),
     new SwfStaticEnvelopeContentProviderChannelApiImpl({
       diagramEditorEnvelopeContent: swfDiagramEditorEnvelopeIndex,

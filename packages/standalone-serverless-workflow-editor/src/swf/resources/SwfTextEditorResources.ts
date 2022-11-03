@@ -18,7 +18,7 @@ import * as fs from "fs";
 import { BaseEditorResources, EditorResources } from "../../common/EditorResources";
 
 export class ServerlessworkflowTextEditorResources extends BaseEditorResources {
-  private readonly JS_RESOURCES_EXPR = "jso|yaml";
+  private readonly JS_RESOURCES_EXPR = "jso|yaml|worker.js";
   public get(args: { resourcesPathPrefix: string }) {
     const swfTextEditorResources: EditorResources = {
       baseCssResources: [],

@@ -22,7 +22,7 @@ import { ServerlessWorkflowEmptyState } from "./SwfEditorEmptyState";
 import { StandaloneEditorApi } from "@kie-tools/standalone-serverless-workflow-editor/dist/common/Editor";
 import { extname } from "path";
 
-export type ServerlessWorkflowType = "json" | "yml" | "yaml";
+export type ServerlessWorkflowType = "json" | "yaml";
 
 export function SwfStandaloneEditorPage() {
   const swfEditorContainer = useRef<HTMLDivElement>(null);
@@ -34,7 +34,7 @@ export function SwfStandaloneEditorPage() {
   const [editor, setEditor] = useState<StandaloneEditorApi>();
 
   const onSetContent = useCallback((path: string, content: string) => {
-    const match = /\.sw\.(json|yml|yaml)$/.exec(path.toLowerCase());
+    const match = /\.sw\.(json|yaml)$/.exec(path.toLowerCase());
     const dotExtension = match ? match[0] : extname(path);
     const extension = dotExtension.slice(1);
 

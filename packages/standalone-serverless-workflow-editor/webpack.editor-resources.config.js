@@ -18,6 +18,7 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const FileManagerPlugin = require("filemanager-webpack-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 module.exports = (env) => [
   merge(common(env), {
@@ -33,12 +34,28 @@ module.exports = (env) => [
       rules: [...patternflyBase.webpackModuleRules],
     },
     plugins: [
+      new MonacoWebpackPlugin({
+        languages: ["json"],
+        customLanguages: [
+          {
+            label: "yaml",
+            entry: ["monaco-yaml", "vs/basic-languages/yaml/yaml.contribution"],
+            worker: {
+              id: "monaco-yaml/yamlWorker",
+              entry: "monaco-yaml/yaml.worker.js",
+            },
+          },
+        ],
+      }),
       new FileManagerPlugin({
         events: {
           onEnd: {
             mkdir: ["./dist/resources/swf/js/"],
-            copy: [{ source: "./dist/*monaco-editor*.js", destination: "./dist/resources/swf/js/" }],
-            delete: ["./dist/*monaco-editor*.js"],
+            copy: [
+              { source: "./dist/*monaco-editor*.js", destination: "./dist/resources/swf/js/" },
+              { source: "./dist/*worker*.js", destination: "./dist/resources/swf/js/" },
+            ],
+            delete: ["./dist/*monaco-editor*.js", "./dist/*worker*.js"],
           },
         },
       }),
