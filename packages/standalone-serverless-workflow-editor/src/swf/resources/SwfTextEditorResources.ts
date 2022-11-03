@@ -32,11 +32,17 @@ export class ServerlessworkflowTextEditorResources extends BaseEditorResources {
   }
 
   public getReferencedJSPaths(resourcesPathPrefix: string) {
-    return fs
+    const res = fs
       .readdirSync(resourcesPathPrefix)
       .filter((file) => file.match(this.JS_RESOURCES_EXPR))
       .map((file) => ({ path: `${resourcesPathPrefix}/${file?.split("/").pop()}` }))
       .map((ref) => this.createResource(ref));
+
+    console.log("###########################################");
+    res.forEach((resource) => console.log(resource.path));
+    console.log("###########################################");
+
+    return res;
   }
 
   public getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string) {

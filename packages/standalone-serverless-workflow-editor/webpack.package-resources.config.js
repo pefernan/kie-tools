@@ -41,4 +41,5 @@ module.exports = (env) =>
       compress: true,
       port: buildEnv.standaloneEditors.dev.port,
     },
+    ignoreWarnings: [/Failed to parse source map/],
   });

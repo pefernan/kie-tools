@@ -24,16 +24,23 @@ export function initJsonSchemaDiagnostics() {
   //   completionItems: false,
   // });
 
-  monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
-    validate: true,
-    allowComments: false,
-    schemaValidation: "error",
-    schemas: [
-      {
-        uri: "https://serverlessworkflow.io/schemas/0.8/workflow.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_WORKFLOW_SCHEMA,
-      },
-    ],
-  });
+  try {
+    console.log("initJsonSchemaDiagnostics");
+
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+      validate: true,
+      allowComments: false,
+      schemaValidation: "error",
+      schemas: [
+        {
+          uri: "https://serverlessworkflow.io/schemas/0.8/workflow.json",
+          fileMatch: ["*"],
+          schema: SW_SPEC_WORKFLOW_SCHEMA,
+        },
+      ],
+    });
+    console.log("initJsonSchemaDiagnostics end");
+  } catch (e) {
+    console.log("jsonDiagnostics error", e);
+  }
 }

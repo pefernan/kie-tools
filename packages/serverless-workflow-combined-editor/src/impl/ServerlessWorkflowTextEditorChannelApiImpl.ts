@@ -39,6 +39,10 @@ import {
 import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
+function log(msg: string, args: any = "") {
+  console.log(`ServerlessWorkflowTextEditorChannelApiImpl ${msg}`, args);
+}
+
 export class ServerlessWorkflowTextEditorChannelApiImpl implements ServerlessWorkflowTextEditorChannelApi {
   constructor(
     private readonly defaultApiImpl: KogitoEditorChannelApi,
@@ -138,7 +142,17 @@ export class ServerlessWorkflowTextEditorChannelApiImpl implements ServerlessWor
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.channelApi.requests.kogitoSwfLanguageService__getCompletionItems(args);
+    log("getCompletionItems", this.channelApi);
+    return new Promise<CompletionItem[]>(async (resolve, reject) => {
+      try {
+        const result = await this.channelApi.requests.kogitoSwfLanguageService__getCompletionItems(args);
+        log("getCompletionItems result", result);
+        resolve(result);
+      } catch (err) {
+        log("getCompletionItems error", err);
+        reject(err);
+      }
+    });
   }
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {

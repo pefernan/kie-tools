@@ -27,6 +27,7 @@ export function initCompletion(
   commandIds: SwfTextEditorInstance["commands"],
   channelApi: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>
 ): monaco.IDisposable {
+  console.log("initCompletion-before", monaco.languages.json.jsonDefaults.diagnosticsOptions);
   return monaco.languages.registerCompletionItemProvider(["json", "yaml"], {
     triggerCharacters: [" ", ":", '"'],
     provideCompletionItems: async (
@@ -35,6 +36,7 @@ export function initCompletion(
       context: monaco.languages.CompletionContext,
       cancellationToken: monaco.CancellationToken
     ) => {
+      console.log("provideCompletionItems", monaco.languages.json.jsonDefaults.diagnosticsOptions);
       const currentWordPosition = model.getWordAtPosition(cursorPosition);
 
       const lsCompletionItems = await channelApi.requests.kogitoSwfLanguageService__getCompletionItems({
@@ -56,6 +58,7 @@ export function initCompletion(
         },
       });
 
+      console.log("provideCompletionItems lsCompletionItems", lsCompletionItems);
       if (cancellationToken.isCancellationRequested) {
         return undefined;
       }
@@ -83,6 +86,8 @@ export function initCompletion(
           endColumn: (c.textEdit as ls.TextEdit).range.end.character + 1,
         },
       }));
+
+      console.log("provideCompletionItems monacoCompletionItems", monacoCompletionItems);
 
       return {
         suggestions: monacoCompletionItems,
