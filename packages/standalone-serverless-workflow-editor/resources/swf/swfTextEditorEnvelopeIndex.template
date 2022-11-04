@@ -19,6 +19,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
+    <script>
+        window.MonacoEditorWorkersHelper = {
+            <%
+              _.map(editorResources.workersJSResources, function(jsResource) {
+                print('getWorkerContent_' + jsResource.workerName + ': () => `' + jsResource.content + '`,\n');
+              });
+            %>
+            getMonacoEditorWorker: (workerId) => {
+                let workerSource;
+                switch(workerId) {
+                <%
+                  _.map(editorResources.workersJSResources, function(jsResource) {
+                    print('case "' + jsResource.workerName + '": workerSource = window.MonacoEditorWorkersHelper.getWorkerContent_' + jsResource.workerName + '();break;\n');
+                  });
+                %>
+                }
+                if(!workerSource) {
+                    throw new Error(`Cannot find worker for type: '${workerId}'`);
+                }
+                return  new Worker(window.URL.createObjectURL(new Blob([workerSource],{type:'text/javascript'})))
+            }
+        };
+    </script>
+
     <%
       _.map(editorResources.baseJsResources, function(jsResource) {
         print('\n<script data-src="'+ jsResource.path +'">\n' + jsResource.content + '\n</script>\n');

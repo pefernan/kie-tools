@@ -15,34 +15,54 @@
  */
 
 import * as fs from "fs";
-import { BaseEditorResources, EditorResources } from "../../common/EditorResources";
+import * as path from "path";
+
+import { BaseEditorResources, EditorResources, JsResource } from "../../common/EditorResources";
+
+export interface WorkerJSResource extends JsResource {
+  workerName: string;
+}
+
+interface ServerlessWorkflowResources extends EditorResources {
+  workersJSResources: WorkerJSResource[];
+}
 
 export class ServerlessworkflowTextEditorResources extends BaseEditorResources {
-  private readonly JS_RESOURCES_EXPR = "jso|yaml|worker.js";
+  private readonly JS_RESOURCES_EXPR = "(\\wmonaco-edito.*)(\\wjso|\\wyaml)";
+  private readonly JS_WORKER_EXPR = ".worker.js";
+
   public get(args: { resourcesPathPrefix: string }) {
-    const swfTextEditorResources: EditorResources = {
+    const swfTextEditorResources: ServerlessWorkflowResources = {
       baseCssResources: [],
       baseJsResources: [],
       fontResources: [],
       referencedCssResources: [],
       referencedJsResources: this.getReferencedJSPaths(args.resourcesPathPrefix),
       envelopeJsResource: this.createResource({ path: `dist/envelope/swf-text-editor-envelope.js` }),
+      workersJSResources: this.getWorkersJSResources(args.resourcesPathPrefix),
     };
     return swfTextEditorResources;
   }
 
   public getReferencedJSPaths(resourcesPathPrefix: string) {
-    const res = fs
+    return this.getJSResources(resourcesPathPrefix, this.JS_RESOURCES_EXPR);
+  }
+
+  public getWorkersJSResources(resourcesPathPrefix: string) {
+    return this.getJSResources(resourcesPathPrefix, this.JS_WORKER_EXPR, ["\\", "`", "$"]).map((jsResource) => {
+      return {
+        workerName: path.parse(jsResource.path).name.split(".")[0],
+        ...jsResource,
+      };
+    });
+  }
+
+  private getJSResources(resourcesPathPrefix: string, matchExpr: string, escapeCharacters?: string[]): JsResource[] {
+    return fs
       .readdirSync(resourcesPathPrefix)
-      .filter((file) => file.match(this.JS_RESOURCES_EXPR))
+      .filter((file) => file.match(matchExpr))
       .map((file) => ({ path: `${resourcesPathPrefix}/${file?.split("/").pop()}` }))
-      .map((ref) => this.createResource(ref));
-
-    console.log("###########################################");
-    res.forEach((resource) => console.log(resource.path));
-    console.log("###########################################");
-
-    return res;
+      .map((ref) => this.createResource(ref, escapeCharacters));
   }
 
   public getReferencedCSSPaths(resourcesPathPrefix: string, gwtModuleName: string) {
