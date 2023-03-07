@@ -20,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.enterprise.event.Event;
+
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +34,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.DomainObjectSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.event.util.FileNameElementSetterEvent;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
@@ -129,11 +132,14 @@ public class FormsCanvasSessionHandlerTest {
     @Mock
     private UpdateDomainObjectPropertyCommand updateDomainObjectPropertyCommand;
 
+    @Mock
+    private Event<FileNameElementSetterEvent> fileNameElementSetterEventEvent;
+
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
         this.refreshFormPropertiesEvent = new RefreshFormPropertiesEvent(session, UUID);
-        this.handler = spy(new FormsCanvasSessionHandler(definitionManager, commandFactory, sessionCommandManager) {
+        this.handler = spy(new FormsCanvasSessionHandler(definitionManager, commandFactory, sessionCommandManager, fileNameElementSetterEventEvent) {
             @Override
             protected FormsCanvasSessionHandler.FormsDomainObjectCanvasListener getFormsDomainObjectCanvasListener() {
                 return domainObjectCanvasListener;

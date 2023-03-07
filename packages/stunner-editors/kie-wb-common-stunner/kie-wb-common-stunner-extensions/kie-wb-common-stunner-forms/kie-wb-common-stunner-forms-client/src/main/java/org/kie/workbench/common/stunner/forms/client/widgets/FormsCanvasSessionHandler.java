@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -40,6 +41,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtil
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommand;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.SessionCommandManager;
+import org.kie.workbench.common.stunner.core.client.event.util.FileNameElementSetterEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
@@ -69,15 +71,19 @@ public class FormsCanvasSessionHandler {
     private FormFeaturesSessionProvider featuresSessionProvider;
     private FormRenderer renderer;
 
+    private Event<FileNameElementSetterEvent> fileNameElementSetterEvent;
+
     @Inject
     public FormsCanvasSessionHandler(final DefinitionManager definitionManager,
                                      final CanvasCommandFactory<AbstractCanvasHandler> commandFactory,
-                                     final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager) {
+                                     final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager,
+                                     final Event<FileNameElementSetterEvent> fileNameElementSetterEvent) {
         this.definitionManager = definitionManager;
         this.commandFactory = commandFactory;
         this.canvasListener = getFormsCanvasListener();
         this.domainObjectCanvasListener = getFormsDomainObjectCanvasListener();
         this.sessionCommandManager = sessionCommandManager;
+        this.fileNameElementSetterEvent = fileNameElementSetterEvent;
     }
 
     protected FormsCanvasListener getFormsCanvasListener() {
@@ -141,11 +147,14 @@ public class FormsCanvasSessionHandler {
             }
         }
     }
-
     @SuppressWarnings("unchecked")
     public boolean executeUpdateProperty(final Element<? extends Definition<?>> element,
                                          final String fieldName,
                                          final Object value) {
+
+        if (fieldName.equals("executionSet.fileName")) { // Special Condition to enable DMN Auto population on BusinessRuleTask
+            fileNameElementSetterEvent.fire( new FileNameElementSetterEvent(element));
+        }
         return execute(commandFactory.updatePropertyValue(element, fieldName, value), canvasListener);
     }
 
@@ -447,7 +456,6 @@ public class FormsCanvasSessionHandler {
 
         @Override
         public void update(final Element item) {
-
             if (!Objects.isNull(renderer) && renderer.areLastPositionsSameForElement(item)) {
                 renderer.resetCache();
             }
