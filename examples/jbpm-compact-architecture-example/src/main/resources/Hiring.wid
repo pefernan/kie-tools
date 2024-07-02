@@ -1,19 +1,16 @@
 [
   [
-    "name" : "Rest",
+    "name" : "HRAsyncVerification",
+    "displayName" : "HR Verification",
+    "icon" : "defaultservicenodeicon.png",
+    "category" : "Async Tasks",
     "parameters" : [
-        "Url" : new StringDataType(),
-        "ContentData" : new ObjectDataType(),
-        "Method": new StringDataType,
-        "Host" : new StringDataType(),
-        "Port" : new IntegerDataType(),
-        "Username" : new StringDataType(),
-        "Password" : new StringDataType()
+        "candidate" : new ObjectDataType(),
+        "offer" : new ObjectDataType(),
     ],
     "results" : [
-        "Result" : new ObjectDataType(),
-    ],
-    "displayName" : "REST",
-    "icon" : "defaultservicenodeicon.png"
+        "approved" : new BooleanDataType(),
+        "comment" : new StringDataType(),
+    ]
   ]
  ]

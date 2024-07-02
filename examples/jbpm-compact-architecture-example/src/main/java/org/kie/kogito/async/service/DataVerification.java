@@ -1,2 +1,6 @@
-package org.kie.kogito.async.service;public class DataVerification {
+package org.kie.kogito.async.service;
+
+public class DataVerification {
+
+
 }
