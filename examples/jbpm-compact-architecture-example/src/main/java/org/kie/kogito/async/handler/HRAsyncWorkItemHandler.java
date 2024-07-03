@@ -4,7 +4,7 @@ import io.vertx.core.Vertx;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
 import org.kie.kogito.async.service.VerificationData;
-import org.kie.kogito.async.service.VerificationResponse;
+import org.kie.kogito.hr.VerificationResponse;
 import org.kie.kogito.hr.CandidateData;
 import org.kie.kogito.hr.Offer;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;

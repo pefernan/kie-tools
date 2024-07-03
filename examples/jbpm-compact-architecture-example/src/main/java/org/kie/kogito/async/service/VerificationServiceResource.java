@@ -2,9 +2,8 @@ package org.kie.kogito.async.service;
 
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.*;
-import org.apache.commons.lang3.stream.Streams;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.hr.VerificationResponse;
 
 import java.util.Optional;
 
